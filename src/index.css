@@ -1,0 +1,133 @@
+@import "@fontsource/overpass";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+
+    --font-sans: "ui-sans-serif", system-ui, sans-serif;
+    --warning: 38 92% 50%;
+    /* Amber 500 */
+    --warning-foreground: 48 96% 89%;
+    --success: 142 71% 45%;
+    /* Green 600 */
+    --success-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.3%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.3%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.3%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.3%;
+    --input: 240 3.7% 15.3%;
+    --ring: 240 4.9% 83.9%;
+
+    --warning: 48 96% 89%;
+    /* Amber 100 roughly */
+    --warning-foreground: 38 92% 50%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+  }
+
+  .agreena {
+    --background: 0 0% 98%;
+    /* Lighter, almost white background #FAFAFA */
+    --foreground: 0 0% 5%;
+    /* #0D0D0D */
+
+    --card: 0 0% 100%;
+    /* Pure white cards */
+    --card-foreground: 0 0% 5%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+
+    --primary: 248 66% 52%;
+    /* #4730DB */
+    --primary-foreground: 0 0% 100%;
+    /* #FFFFFF */
+
+    --secondary: 250 91% 9%;
+    /* #09022B */
+    --secondary-foreground: 218 59% 85%;
+    /* #C1D3F1 */
+
+    --muted: 0 0% 96%;
+    /* Light gray #F5F5F5 */
+    --muted-foreground: 0 0% 45%;
+    /* Medium gray for text */
+
+    --accent: 248 66% 96%;
+    /* Very light purple tint */
+    --accent-foreground: 248 66% 52%;
+
+    --destructive: 0 100% 28%;
+    /* #8E0000 */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89%;
+    /* Light gray border #E3E3E3 */
+    --input: 0 0% 89%;
+    --ring: 248 66% 52%;
+
+    --radius: 0.5rem;
+
+    --font-sans: 'Overpass', sans-serif;
+
+    /* Agreena specific semantic colors */
+    --warning: 0 100% 28%;
+    /* Agreena Destructive Red */
+    --warning-foreground: 0 0% 100%;
+
+    --success: 153 84% 39%;
+    /* Agreena Success #10B981 */
+    --success-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
