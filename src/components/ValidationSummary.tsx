@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AlertTriangle, CheckCircle } from "lucide-react"
 import { useState } from "react"
+import { getPlanTypeColor, getPlanTypeDotColor } from "@/lib/utils"
 
 interface ValidationSummaryProps {
     fields: Field[]
@@ -71,10 +72,16 @@ export function ValidationSummary({ fields, plans, onAssignFields, onConfirm }: 
                                             className={`
                                                 flex items-center gap-3 p-3 rounded-md border cursor-pointer transition-all
                                                 ${isSelected ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'bg-background hover:bg-muted/50'}
+                                                ${getPlanTypeColor('unassigned')}
                                             `}
                                         >
                                             <Checkbox checked={isSelected} className="pointer-events-none" />
-                                            <span className="text-sm font-medium">{field.name}</span>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-sm font-medium block">{field.name}</span>
+                                                {field.hectares && (
+                                                    <span className="text-xs text-muted-foreground">{field.hectares.toFixed(1)} ha</span>
+                                                )}
+                                            </div>
                                         </div>
                                     )
                                 })}
@@ -97,7 +104,10 @@ export function ValidationSummary({ fields, plans, onAssignFields, onConfirm }: 
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {plans.map(p => (
-                                                        <SelectItem key={p.id} value={p.id}>{p.name || "Untitled Plan"}</SelectItem>
+                                                        <SelectItem key={p.id} value={p.id} className="flex items-center gap-2">
+                                                            <span className={`h-2 w-2 rounded-full ${getPlanTypeDotColor(p.type)}`} />
+                                                            {p.name || "Untitled Plan"}
+                                                        </SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>

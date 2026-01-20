@@ -36,6 +36,16 @@
     --success: 142 71% 45%;
     /* Green 600 */
     --success-foreground: 0 0% 100%;
+
+    /* Plan type colors */
+    --plan-synthetic: 217 91% 60%;
+    /* Blue */
+    --plan-organic: 142 71% 45%;
+    /* Green */
+    --plan-none: 215 25% 27%;
+    /* Gray */
+    --plan-unassigned: 38 92% 50%;
+    /* Amber/Orange */
   }
 
   .dark {
@@ -64,6 +74,12 @@
     --warning-foreground: 38 92% 50%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
+
+    /* Plan type colors */
+    --plan-synthetic: 217 91% 60%;
+    --plan-organic: 142 76% 36%;
+    --plan-none: 215 25% 50%;
+    --plan-unassigned: 48 96% 89%;
   }
 
   .agreena {
@@ -119,6 +135,16 @@
     --success: 153 84% 39%;
     /* Agreena Success #10B981 */
     --success-foreground: 0 0% 100%;
+
+    /* Plan type colors */
+    --plan-synthetic: 248 66% 52%;
+    /* Use primary purple for synthetic */
+    --plan-organic: 153 84% 39%;
+    /* Use success green for organic */
+    --plan-none: 0 0% 45%;
+    /* Muted gray for none */
+    --plan-unassigned: 0 100% 28%;
+    /* Use warning red for unassigned */
   }
 }
 
