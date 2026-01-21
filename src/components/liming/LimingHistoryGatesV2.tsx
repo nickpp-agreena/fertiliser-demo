@@ -116,7 +116,7 @@ export function LimingHistoryGatesV2({ history, onHistoryChange }: LimingHistory
           {/* Summary when complete */}
           {(history.appliedLast20Years === true && history.lastAppliedYear !== null) && (
             <div className="pt-5 border-t-2 animate-in fade-in duration-300">
-              <div className="flex items-start gap-4 p-5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 shadow-sm">
+              <div className="flex items-start gap-4 p-5 rounded-lg border-2 border-primary/30 shadow-sm" style={{ backgroundColor: 'rgba(109, 87, 255, 0.05)' }}>
                 <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <CheckCircle2 className="h-6 w-6 text-primary" />
                 </div>
@@ -131,7 +131,7 @@ export function LimingHistoryGatesV2({ history, onHistoryChange }: LimingHistory
 
           {history.appliedLast20Years === false && (
             <div className="pt-5 border-t-2 animate-in fade-in duration-300">
-              <div className="flex items-start gap-4 p-5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 shadow-sm">
+              <div className="flex items-start gap-4 p-5 rounded-lg border-2 border-primary/30 shadow-sm" style={{ backgroundColor: 'rgba(109, 87, 255, 0.05)' }}>
                 <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                   <CheckCircle2 className="h-6 w-6 text-primary" />
                 </div>

@@ -198,7 +198,7 @@ export function LimingPlanAccordionItemV2({
       <AccordionContent className="pt-6">
         <div className="space-y-8">
           {/* Plan Details Section */}
-          <div className="space-y-6 p-6 rounded-lg border-2 bg-gradient-to-br from-card to-card/50 shadow-sm">
+          <div className="space-y-6 p-6 rounded-lg border-2 shadow-sm" style={{ backgroundColor: 'rgba(109, 87, 255, 0.1)' }}>
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold flex items-center gap-2 text-foreground">
                 <div 
@@ -228,7 +228,7 @@ export function LimingPlanAccordionItemV2({
                   value={plan.name}
                   onChange={(e) => onUpdate({ ...plan, name: e.target.value })}
                   placeholder="e.g. Spring Liming 2024"
-                  className="h-11 border-2 focus:border-primary"
+                  className="h-11 border-2 focus:border-primary bg-background"
                 />
               </div>
 
@@ -243,7 +243,7 @@ export function LimingPlanAccordionItemV2({
                   value={plan.year && availableYears.includes(plan.year) ? plan.year : availableYears[0]}
                   onValueChange={(value) => onUpdate({ ...plan, year: value })}
                 >
-                  <SelectTrigger className="h-11 border-2 focus:border-primary">
+                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-background">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -265,7 +265,7 @@ export function LimingPlanAccordionItemV2({
                   value={plan.material_type || ""}
                   onValueChange={(value) => onUpdate({ ...plan, material_type: value as "limestone" | "dolomite" | null })}
                 >
-                  <SelectTrigger className="h-11 border-2 focus:border-primary">
+                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-background">
                     <SelectValue placeholder="Select material..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -289,7 +289,7 @@ export function LimingPlanAccordionItemV2({
                     value={plan.application_rate_t_per_ha || ''}
                     onChange={(e) => onUpdate({ ...plan, application_rate_t_per_ha: Number(e.target.value) })}
                     placeholder="0.0"
-                    className="h-11 pr-14 border-2 focus:border-primary"
+                    className="h-11 pr-14 border-2 focus:border-primary bg-background"
                   />
                   <Badge variant="outline" className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 h-6 pointer-events-none">
                     t/ha

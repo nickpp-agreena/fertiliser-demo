@@ -50,7 +50,7 @@ export function ValidationSummary({ fields, plans, onAssignFields, onConfirm }: 
                 </CardHeader>
                 <CardContent>
                     {isComplete ? (
-                        <p className="text-muted-foreground">All fields have been assigned a fertilizer plan. You are ready to proceed.</p>
+                        <p className="text-muted-foreground">All fields have been assigned a fertiliser plan. You are ready to proceed.</p>
                     ) : (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between mb-2">

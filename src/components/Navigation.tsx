@@ -19,6 +19,18 @@ interface NavigationProps {
 export function Navigation({ fieldCount, onFieldCountChange }: NavigationProps) {
     const { setTheme, theme } = useTheme()
     const [fieldCountInput, setFieldCountInput] = useState<string>(fieldCount.toString())
+    
+    // Get current demo name from URL
+    const getCurrentDemoName = () => {
+        const urlParams = new URLSearchParams(window.location.search)
+        const demoParam = urlParams.get('demo')
+        const versionParam = urlParams.get('version')
+        
+        if (demoParam === 'liming') {
+            return versionParam === 'v2' ? 'Liming V2' : 'Liming V1'
+        }
+        return 'Fertiliser Plans'
+    }
 
     const handleFieldCountBlur = () => {
         const num = parseInt(fieldCountInput, 10)
@@ -43,13 +55,19 @@ export function Navigation({ fieldCount, onFieldCountChange }: NavigationProps) 
     return (
         <nav className="border-b bg-background px-6 py-4 flex items-center justify-between sticky top-0 z-10">
             <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8"
+                    onClick={() => window.location.href = '/'}
+                    title="Back to Demo Selector"
+                >
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground">Crops</span>
+                    <span className="font-medium text-foreground">Field Definition Demos</span>
                     <span>&gt;</span>
-                    <span className="font-medium text-primary">Alfalfa</span>
+                    <span className="font-medium text-primary">{getCurrentDemoName()}</span>
                 </div>
             </div>
             <div className="flex items-center gap-2">

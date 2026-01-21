@@ -4,7 +4,7 @@ import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MarkNotLimedDialog } from "./MarkNotLimedDialog"
-import { XCircle, Plus, MapPin, Pencil } from "lucide-react"
+import { CircleSlash, Plus, MapPin, Pencil } from "lucide-react"
 
 interface NotLimedFieldsAccordionProps {
   fields: Field[]
@@ -62,7 +62,7 @@ export function NotLimedFieldsAccordion({
                 <div className="max-w-sm mx-auto space-y-4">
                   <div className="flex justify-center">
                     <div className="h-12 w-12 rounded-full bg-muted/20 flex items-center justify-center">
-                      <XCircle className="h-6 w-6 text-muted-foreground" />
+                      <CircleSlash className="h-6 w-6 text-muted-foreground" />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -118,7 +118,7 @@ export function NotLimedFieldsAccordion({
                           </div>
                           <div className="mt-2">
                             <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 border-amber-500/40 bg-amber-50/50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400">
-                              <XCircle className="h-2.5 w-2.5 mr-1" />
+                              <CircleSlash className="h-2.5 w-2.5 mr-1" />
                               Not Limed
                             </Badge>
                           </div>

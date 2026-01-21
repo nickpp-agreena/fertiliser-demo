@@ -8,7 +8,7 @@ import { MarkNotLimedDialog } from "@/components/liming/MarkNotLimedDialog"
 import { NotLimedFieldsAccordion } from "@/components/liming/NotLimedFieldsAccordion"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Plus, CheckCircle2, Save, XCircle } from "lucide-react"
+import { Plus, CheckCircle2, Save, CircleSlash } from "lucide-react"
 import { FIELD_DATA } from "@/lib/fieldData"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -267,7 +267,7 @@ export default function LimingAppV2() {
                     variant="outline" 
                     className="border-2 hover:border-primary hover:bg-primary hover:text-primary-foreground"
                   >
-                    <XCircle className="mr-2 h-4 w-4" /> Mark Fields without liming
+                    <CircleSlash className="mr-2 h-4 w-4" /> Mark Fields without liming
                   </Button>
                   <Button onClick={addPlan} size="sm" variant="outline" className="border-2 hover:border-primary hover:bg-primary hover:text-primary-foreground">
                     <Plus className="mr-2 h-4 w-4" /> Add Plan
@@ -297,7 +297,7 @@ export default function LimingAppV2() {
                       size="lg" 
                       className="w-full h-12 text-base font-semibold border-2 hover:bg-muted hover:border-muted-foreground/40"
                     >
-                      <XCircle className="mr-2 h-5 w-5" /> or mark fields without liming
+                      <CircleSlash className="mr-2 h-5 w-5" /> or mark fields without liming
                     </Button>
                   </div>
                 </div>

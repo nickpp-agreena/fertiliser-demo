@@ -1,10 +1,10 @@
-# Fertilizer Plan Manager
+# Fertiliser Plan Manager
 
-A responsive React application for defining and assigning agricultural fertilizer plans to fields. Built with Vite, React, Tailwind CSS, and ShadCN UI.
+A responsive React application for defining and assigning agricultural fertiliser plans to fields. Built with Vite, React, Tailwind CSS, and ShadCN UI.
 
 ## Features
 
-- **Plan Management**: Create multiple fertilizer plans (Synthetic, Organic, or No Fertilizer).
+- **Plan Management**: Create multiple fertiliser plans (Synthetic, Organic, or No Fertiliser).
 - **Conditional Layouts**: Dynamic form fields based on strategy type.
 - **Field Assignment**: Assign plans to fields (Field 001 - Field 010).
 - **Validation**: Ensure all fields are covered before confirming.

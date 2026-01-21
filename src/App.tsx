@@ -257,7 +257,7 @@ export default function App() {
 
       <main className="max-w-5xl mx-auto p-6 md:p-8 space-y-8 animate-in fade-in duration-500">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Fertilizer Plans</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Fertiliser Plans</h1>
           <p className="text-muted-foreground text-lg">Define nutrient strategies and apply them to your fields.</p>
         </div>
 

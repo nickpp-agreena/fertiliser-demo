@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Search, CheckCircle2, MapPin, Filter, X, XCircle } from "lucide-react"
+import { Search, CheckCircle2, MapPin, Filter, X, CircleSlash } from "lucide-react"
 import { getMaterialTypeColor } from "@/lib/utils"
 
 interface LimingFieldSelectionV2Props {
@@ -292,7 +292,6 @@ export function LimingFieldSelectionV2({
               disabled={selectedFieldIds.length === 0}
               className="border-muted-foreground/30 text-muted-foreground hover:bg-muted hover:text-muted-foreground"
             >
-              <XCircle className="h-3.5 w-3.5 mr-1.5" />
               Mark as Not Limed
             </Button>
           )}
@@ -383,7 +382,7 @@ export function LimingFieldSelectionV2({
                         htmlFor="filter-not-limed"
                         className="text-sm cursor-pointer flex items-center gap-2 flex-1"
                       >
-                        <XCircle className="h-3 w-3 text-muted-foreground" />
+                        <CircleSlash className="h-3 w-3 text-muted-foreground" />
                         Not Limed
                       </Label>
                     </div>
@@ -505,7 +504,7 @@ export function LimingFieldSelectionV2({
                 <div className="mt-2 space-y-1.5">
                   {isNotLimed && !isAssignedToThis ? (
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 border-amber-500/40 bg-amber-50/50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400">
-                      <XCircle className="h-2.5 w-2.5 mr-1" />
+                      <CircleSlash className="h-2.5 w-2.5 mr-1" />
                       Not Limed
                     </Badge>
                   ) : isAssignedToThis ? (

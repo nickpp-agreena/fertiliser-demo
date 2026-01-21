@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Search, CheckCircle2, Filter, X, XCircle } from "lucide-react"
+import { Search, CheckCircle2, Filter, X, CircleSlash } from "lucide-react"
 import { getMaterialTypeColor } from "@/lib/utils"
 
 interface LimingFieldsViewV2Props {
@@ -263,7 +263,7 @@ export function LimingFieldsViewV2({
                         htmlFor="fields-view-filter-not-limed"
                         className="text-sm cursor-pointer flex items-center gap-2 flex-1"
                       >
-                        <XCircle className="h-3 w-3 text-muted-foreground" />
+                        <CircleSlash className="h-3 w-3 text-muted-foreground" />
                         Not Limed
                       </Label>
                     </div>
@@ -367,7 +367,7 @@ export function LimingFieldsViewV2({
                 <div className="mt-2 space-y-1.5">
                   {isNotLimed ? (
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 border-amber-500/40 bg-amber-50/50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400">
-                      <XCircle className="h-2.5 w-2.5 mr-1" />
+                      <CircleSlash className="h-2.5 w-2.5 mr-1" />
                       Not Limed
                     </Badge>
                   ) : assignedPlan ? (

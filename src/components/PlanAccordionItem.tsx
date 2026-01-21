@@ -336,7 +336,7 @@ export function PlanAccordionItem({ plan, fields, plans, onUpdate, onAssignField
                     {migratedPlan.fertilizers.length > 0 && (
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
-                                <Label className="font-bold text-sm">Fertilizers</Label>
+                                <Label className="font-bold text-sm">Fertilisers</Label>
                             </div>
                             
                             {migratedPlan.fertilizers.map((fertilizer, index) => {
@@ -424,7 +424,7 @@ export function PlanAccordionItem({ plan, fields, plans, onUpdate, onAssignField
                                                 <div className="flex items-center justify-between">
                                                     <div className="space-y-1">
                                                         <Label className="font-bold text-sm">Nitrification Inhibitor</Label>
-                                                        <p className="text-xs text-muted-foreground">Did you use an inhibitor for this fertilizer?</p>
+                                                        <p className="text-xs text-muted-foreground">Did you use an inhibitor for this fertiliser?</p>
                                                     </div>
                                                     <Switch
                                                         checked={fertilizer.hasInhibitor || false}
@@ -497,7 +497,7 @@ export function PlanAccordionItem({ plan, fields, plans, onUpdate, onAssignField
                                                 <div className="flex items-center justify-between">
                                                     <div className="space-y-1">
                                                         <Label className="font-bold text-sm">Nitrification Inhibitor</Label>
-                                                        <p className="text-xs text-muted-foreground">Did you use an inhibitor for this fertilizer?</p>
+                                                        <p className="text-xs text-muted-foreground">Did you use an inhibitor for this fertiliser?</p>
                                                     </div>
                                                     <Switch
                                                         checked={fertilizer.hasInhibitor || false}
@@ -554,7 +554,7 @@ export function PlanAccordionItem({ plan, fields, plans, onUpdate, onAssignField
                     {migratedPlan.type === 'none' && migratedPlan.fertilizers.length === 0 && (
                         <div className="p-4 border rounded-lg bg-muted/10 animate-in fade-in slide-in-from-top-2 duration-200">
                             <div className="grid gap-2 max-w-md">
-                                <Label>Reason for No Fertilizer</Label>
+                                <Label>Reason for No Fertiliser</Label>
                                 <Select value={migratedPlan.noFertilizerReason} onValueChange={(v) => onUpdate({ ...migratedPlan, noFertilizerReason: v })}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select reason..." />

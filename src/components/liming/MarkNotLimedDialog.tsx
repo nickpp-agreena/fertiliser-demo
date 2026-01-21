@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, XCircle } from "lucide-react"
+import { Search, CircleSlash } from "lucide-react"
 
 interface MarkNotLimedDialogProps {
   isOpen: boolean
@@ -122,7 +122,7 @@ export function MarkNotLimedDialog({
       <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <XCircle className="h-5 w-5 text-muted-foreground" />
+            <CircleSlash className="h-5 w-5 text-muted-foreground" />
             Mark Fields as Not Limed
           </DialogTitle>
           <DialogDescription>
@@ -211,7 +211,7 @@ export function MarkNotLimedDialog({
                     <div className="mt-2">
                       {isNotLimed ? (
                         <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 border-amber-500/40 bg-amber-50/50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400">
-                          <XCircle className="h-2.5 w-2.5 mr-1" />
+                          <CircleSlash className="h-2.5 w-2.5 mr-1" />
                           Not Limed
                         </Badge>
                       ) : (
@@ -244,7 +244,7 @@ export function MarkNotLimedDialog({
               variant="outline"
               className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
             >
-              Mark {selectedNotLimed.length} as Unassigned
+              Mark {selectedCount} as Unassigned
             </Button>
           )}
           {canMark && (
@@ -253,8 +253,7 @@ export function MarkNotLimedDialog({
               disabled={!canMark}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <XCircle className="mr-2 h-4 w-4" />
-              Mark {selectedUnassigned.length} as Not Limed
+              Mark {selectedCount} as Not Limed
             </Button>
           )}
         </DialogFooter>
