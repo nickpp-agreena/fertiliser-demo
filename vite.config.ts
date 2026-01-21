@@ -10,4 +10,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    port: 9999,
+    strictPort: false,
+    host: true,
+    allowedHosts: [
+      'wanita-unstooped-darrin.ngrok-free.dev',
+      '.ngrok-free.dev',
+      '.ngrok.io'
+    ]
+  }
 })
