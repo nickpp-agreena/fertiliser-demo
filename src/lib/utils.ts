@@ -69,3 +69,15 @@ export function getPlanTypeDotColor(planType: PlanType | "unassigned"): string {
             return ""
     }
 }
+
+// Get material type color for liming plans
+export function getMaterialTypeColor(material_type: "limestone" | "dolomite" | null): string {
+    switch (material_type) {
+        case "limestone":
+            return "#6B7A6B" // Dark grey-green for limestone (active, distinct)
+        case "dolomite":
+            return "#D9CBA3" // Buff/Tan Dolomite - warm tan
+        default:
+            return "hsl(var(--primary))" // Use primary color when no material type is set
+    }
+}

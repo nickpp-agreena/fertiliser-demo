@@ -21,3 +21,19 @@ export type Field = {
   name: string
   hectares?: number
 }
+
+// V2 Types - Simplified liming history and plans
+export type LimingHistoryV2 = {
+  appliedLast20Years: boolean | null
+  lastAppliedYear: string | null // Year from 2025-2005, or null if not applied
+}
+
+export type LimingPlanV2 = {
+  id: string
+  name: string
+  year: string // Actual year (2025-2005), no "pre-5-years" special case
+  material_type: "limestone" | "dolomite" | null
+  application_rate_t_per_ha: number
+  field_ids: string[]
+  area_ha: number // Derived from selected fields
+}

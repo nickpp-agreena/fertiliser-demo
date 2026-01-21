@@ -156,4 +156,30 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Remove spinner arrows from number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Remove default browser focus outline completely */
+  input:focus,
+  input:focus-visible,
+  input:active {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none;
+  }
+  
+  /* Remove focus ring for all inputs */
+  input:focus-visible {
+    ring: 0 !important;
+    --tw-ring-width: 0 !important;
+  }
 }

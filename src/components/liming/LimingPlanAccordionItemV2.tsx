@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import type { Field, LimingPlan } from "@/lib/limingTypes"
+import type { Field, LimingPlanV2 } from "@/lib/limingTypes"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -7,28 +7,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Separator } from "@/components/ui/separator"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LimingFieldSelection } from "./LimingFieldSelection"
+import { LimingFieldSelectionV2 } from "./LimingFieldSelectionV2"
 import { Badge } from "@/components/ui/badge"
 import { getMaterialTypeColor } from "@/lib/utils"
 import { MoreVertical, Trash2, Copy, Check, CheckCircle, Calendar, Package, MapPin, Save } from "lucide-react"
 
-const generateId = () => Math.random().toString(36).substring(2, 9)
-
-interface LimingPlanAccordionItemProps {
-  plan: LimingPlan
+interface LimingPlanAccordionItemV2Props {
+  plan: LimingPlanV2
   fields: Field[]
-  plans: LimingPlan[]
-  onUpdate: (plan: LimingPlan) => void
-  onAssignFields: (planId: string, year: string | "pre-5-years", fieldIds: string[]) => void
+  plans: LimingPlanV2[]
+  onUpdate: (plan: LimingPlanV2) => void
+  onAssignFields: (planId: string, year: string, fieldIds: string[]) => void
   onDelete: (planId: string) => void
-  onDuplicate: (plan: LimingPlan) => void
+  onDuplicate: (plan: LimingPlanV2) => void
   isOpen?: boolean
   onClose?: () => void
   availableYears: string[]
-  historicalYears: string[] // Years for historical plans (2020 and earlier)
+  notLimedFieldIds: Set<string>
+  onMarkNotLimed: (fieldIds: string[]) => void
+  onUnmarkNotLimed?: (fieldIds: string[]) => void
 }
 
-export function LimingPlanAccordionItem({
+export function LimingPlanAccordionItemV2({
   plan,
   fields,
   plans,
@@ -39,10 +39,12 @@ export function LimingPlanAccordionItem({
   isOpen,
   onClose,
   availableYears,
-  historicalYears,
-}: LimingPlanAccordionItemProps) {
+  notLimedFieldIds,
+  onMarkNotLimed,
+  onUnmarkNotLimed,
+}: LimingPlanAccordionItemV2Props) {
   const [selectedFieldIds, setSelectedFieldIds] = useState<string[]>(plan.field_ids)
-  const [lastSavedPlan, setLastSavedPlan] = useState<LimingPlan | null>(null)
+  const [lastSavedPlan, setLastSavedPlan] = useState<LimingPlanV2 | null>(null)
   const [showSaveSuccess, setShowSaveSuccess] = useState(false)
 
   // Initialize selection based on current assignments - reset when plan changes
@@ -132,9 +134,7 @@ export function LimingPlanAccordionItem({
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="text-[10px] px-2 py-0.5 h-5 gap-1">
               <Calendar className="h-3 w-3" />
-              {plan.year === "pre-5-years" 
-                ? `Historical${plan.historicalYear ? ` ${plan.historicalYear}` : ''}` 
-                : plan.year}
+              {plan.year}
             </Badge>
             {plan.material_type && (
               <Badge 
@@ -232,51 +232,27 @@ export function LimingPlanAccordionItem({
                 />
               </div>
 
-              {/* Year Selection */}
-              {plan.year !== "pre-5-years" ? (
-                <div className="space-y-2.5">
-                  <Label className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                    Year
-                    <span className="text-destructive font-normal">*</span>
-                  </Label>
-                  <Select
-                    value={plan.year && availableYears.includes(plan.year) ? plan.year : availableYears[availableYears.length - 1]}
-                    onValueChange={(value) => onUpdate({ ...plan, year: value })}
-                  >
-                    <SelectTrigger className="h-11 border-2 focus:border-primary">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableYears.map(year => (
-                        <SelectItem key={year} value={year}>{year}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              ) : (
-                <div className="space-y-2.5">
-                  <Label className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                    Year
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 ml-1">Optional</Badge>
-                  </Label>
-              <Select
-                value={plan.historicalYear || "not-specified"}
-                onValueChange={(value) => onUpdate({ ...plan, historicalYear: value === "not-specified" ? undefined : value })}
-              >
-                <SelectTrigger className="max-w-md">
-                  <SelectValue placeholder="Select year (optional)..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="not-specified">Not specified</SelectItem>
-                  {historicalYears.map(year => (
-                    <SelectItem key={year} value={year}>{year}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-                </div>
-              )}
+              {/* Year Selection - Single dropdown for all years (2025-2005) */}
+              <div className="space-y-2.5">
+                <Label className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                  Year
+                  <span className="text-destructive font-normal">*</span>
+                </Label>
+                <Select
+                  value={plan.year && availableYears.includes(plan.year) ? plan.year : availableYears[0]}
+                  onValueChange={(value) => onUpdate({ ...plan, year: value })}
+                >
+                  <SelectTrigger className="h-11 border-2 focus:border-primary">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableYears.map(year => (
+                      <SelectItem key={year} value={year}>{year}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               {/* Material Type */}
               <div className="space-y-2.5">
@@ -323,7 +299,6 @@ export function LimingPlanAccordionItem({
             </div>
           </div>
 
-
           {/* Validation Message */}
           {hasFields && (!plan.material_type || plan.application_rate_t_per_ha <= 0) && (
             <div className="p-4 border-2 border-warning/60 bg-warning/10 rounded-lg flex items-start gap-3 shadow-sm">
@@ -341,13 +316,16 @@ export function LimingPlanAccordionItem({
         <Separator className="my-6" />
 
         {/* Field Selection */}
-        <LimingFieldSelection
+        <LimingFieldSelectionV2
           fields={fields}
           selectedFieldIds={selectedFieldIds}
           onSelectionChange={setSelectedFieldIds}
           planId={plan.id}
           planYear={plan.year}
           plans={plans}
+          notLimedFieldIds={notLimedFieldIds}
+          onMarkNotLimed={onMarkNotLimed}
+          onUnmarkNotLimed={onUnmarkNotLimed}
         />
 
         {/* Total Area and Tonnes - Less Visual Impact */}
