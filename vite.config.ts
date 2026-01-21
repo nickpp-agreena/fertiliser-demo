@@ -12,6 +12,12 @@ export default defineConfig({
   },
   server: {
     port: 9999,
-    strictPort: false
+    strictPort: false,
+    host: true,
+    allowedHosts: [
+      'wanita-unstooped-darrin.ngrok-free.dev',
+      '.ngrok-free.dev',
+      '.ngrok.io'
+    ]
   }
 })

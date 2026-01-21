@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import type { Field, LimingPlan } from "@/lib/limingTypes"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -51,7 +51,7 @@ export function LimingPlanAccordionItem({
     if (!lastSavedPlan) {
       setLastSavedPlan(JSON.parse(JSON.stringify(plan)))
     }
-  }, [])
+  }, [plan, lastSavedPlan])
 
   // Calculate area from selected fields
   const calculateArea = (fieldIds: string[]): number => {
@@ -102,8 +102,8 @@ export function LimingPlanAccordionItem({
   const totalTonnes = plan.area_ha * plan.application_rate_t_per_ha
 
   return (
-    <AccordionItem value={plan.id} id={`liming-plan-accordion-${plan.id}`}>
-      <AccordionTrigger className="hover:no-underline">
+    <AccordionItem value={plan.id} id={`liming-plan-accordion-${plan.id}`} className="relative">
+      <AccordionTrigger className="hover:no-underline pr-12">
         <div className="flex items-center gap-3 flex-1">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-primary" />
@@ -119,21 +119,23 @@ export function LimingPlanAccordionItem({
           <span className="text-xs text-muted-foreground">
             {plan.field_ids.length === 0 ? "Unassigned" : `${plan.area_ha.toFixed(1)} ha`}
           </span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleDelete} className="text-destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </AccordionTrigger>
+      <div className="absolute right-4 top-4 z-10" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleDelete} className="text-destructive">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
 
       <AccordionContent className="pt-6">
         <div className="space-y-6">
@@ -153,7 +155,7 @@ export function LimingPlanAccordionItem({
             <div className="space-y-2">
               <Label className="font-bold text-sm">Year</Label>
               <Select
-                value={plan.year}
+                value={plan.year && availableYears.includes(plan.year) ? plan.year : availableYears[availableYears.length - 1]}
                 onValueChange={(value) => onUpdate({ ...plan, year: value })}
               >
                 <SelectTrigger className="max-w-md">
@@ -170,14 +172,14 @@ export function LimingPlanAccordionItem({
             <div className="space-y-2">
               <Label className="font-bold text-sm">Year (Optional)</Label>
               <Select
-                value={plan.historicalYear || ""}
-                onValueChange={(value) => onUpdate({ ...plan, historicalYear: value || undefined })}
+                value={plan.historicalYear || "not-specified"}
+                onValueChange={(value) => onUpdate({ ...plan, historicalYear: value === "not-specified" ? undefined : value })}
               >
                 <SelectTrigger className="max-w-md">
                   <SelectValue placeholder="Select year (optional)..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Not specified</SelectItem>
+                  <SelectItem value="not-specified">Not specified</SelectItem>
                   {historicalYears.map(year => (
                     <SelectItem key={year} value={year}>{year}</SelectItem>
                   ))}
@@ -191,8 +193,8 @@ export function LimingPlanAccordionItem({
           <div className="space-y-2">
             <Label className="font-bold text-sm">Material Type</Label>
             <Select
-              value={plan.material_type}
-              onValueChange={(value) => onUpdate({ ...plan, material_type: value as "limestone" | "dolomite" })}
+              value={plan.material_type || ""}
+              onValueChange={(value) => onUpdate({ ...plan, material_type: value as "limestone" | "dolomite" | null })}
             >
               <SelectTrigger className="max-w-md">
                 <SelectValue placeholder="Select material..." />
@@ -220,18 +222,18 @@ export function LimingPlanAccordionItem({
             </div>
           </div>
 
-          {/* Derived Area Display */}
-          {plan.field_ids.length > 0 && (
-            <div className="p-4 border rounded-lg bg-muted/10">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Total Area:</span>
-                  <span className="ml-2 font-semibold">{plan.area_ha.toFixed(1)} ha</span>
+          {/* Derived Info */}
+          {hasFields && (
+            <div className="p-4 border-2 border-primary/20 rounded-lg bg-primary/5">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-1">
+                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Total Area</span>
+                  <p className="text-lg font-bold text-foreground">{plan.area_ha.toFixed(1)} ha</p>
                 </div>
                 {plan.application_rate_t_per_ha > 0 && (
-                  <div>
-                    <span className="text-muted-foreground">Total Tonnes:</span>
-                    <span className="ml-2 font-semibold">{totalTonnes.toFixed(1)} t</span>
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground uppercase tracking-wide">Total Tonnes</span>
+                    <p className="text-lg font-bold text-foreground">{totalTonnes.toFixed(1)} t</p>
                   </div>
                 )}
               </div>
@@ -240,8 +242,12 @@ export function LimingPlanAccordionItem({
 
           {/* Validation Message */}
           {hasFields && (!plan.material_type || plan.application_rate_t_per_ha <= 0) && (
-            <div className="p-3 border border-warning/50 bg-warning/10 rounded-lg text-sm text-warning">
-              Material type and application rate are required when fields are selected.
+            <div className="p-4 border-2 border-warning/50 bg-warning/10 rounded-lg flex items-start gap-3">
+              <span className="text-warning text-lg">⚠</span>
+              <div>
+                <p className="text-sm font-semibold text-warning">Required Information Missing</p>
+                <p className="text-xs text-warning/80 mt-1">Material type and application rate are required when fields are selected.</p>
+              </div>
             </div>
           )}
         </div>
@@ -258,21 +264,22 @@ export function LimingPlanAccordionItem({
           plans={plans}
         />
 
-        {/* Apply Button */}
-        {selectedFieldIds.length > 0 && (
-          <div className="flex justify-end pt-4">
-            <Button onClick={handleApply} className="font-bold shadow-sm">
-              Apply to selected fields
-            </Button>
-          </div>
-        )}
-
-        {/* Save Button */}
-        <div className="flex justify-end pt-4 border-t mt-6">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t">
+          <Button
+            onClick={handleApply}
+            className="font-semibold shadow-sm min-w-[160px] h-11"
+            disabled={!isValid || !hasFields}
+            size="lg"
+          >
+            Apply to Selected Fields
+          </Button>
           <Button
             onClick={handleSave}
-            className="font-bold shadow-sm min-w-[140px]"
+            variant={hasUnsavedChanges ? "default" : "outline"}
+            className="font-semibold shadow-sm min-w-[140px] h-11 ml-auto"
             disabled={!hasUnsavedChanges && !showSaveSuccess}
+            size="lg"
           >
             {showSaveSuccess ? (
               <>
@@ -282,7 +289,7 @@ export function LimingPlanAccordionItem({
             ) : hasUnsavedChanges ? (
               <>
                 <Check className="mr-2 h-4 w-4" />
-                Update Plan
+                Save Changes
               </>
             ) : (
               <>

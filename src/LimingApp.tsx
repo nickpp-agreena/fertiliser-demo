@@ -57,7 +57,7 @@ export default function LimingApp() {
     const newPlanId = generateId()
     // Determine year based on history
     const year = history.appliedLast5Years === true 
-      ? availableYears[availableYears.length - 1] // Default to most recent year
+      ? availableYears[availableYears.length - 1] // Default to most recent year (2025)
       : "pre-5-years"
     
     const newPlan: LimingPlan = {
@@ -65,14 +65,22 @@ export default function LimingApp() {
       name: `Liming Plan ${plans.length + 1}`,
       year,
       isHistorical: year === "pre-5-years",
-      material_type: "limestone",
+      material_type: null,
       application_rate_t_per_ha: 0,
       field_ids: [],
       area_ha: 0,
     }
+    
     setPlans(prev => [...prev, newPlan])
+    
     // Close all previous plans and open the new plan accordion
     setOpenAccordionItems([newPlanId])
+    
+    // Scroll to the new plan after a brief delay to ensure it's rendered
+    setTimeout(() => {
+      const element = document.getElementById(`liming-plan-accordion-${newPlanId}`)
+      element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }, 100)
   }
 
   const updatePlan = (updatedPlan: LimingPlan) => {
@@ -192,11 +200,27 @@ export default function LimingApp() {
         {/* Plan Builder Section */}
         {shouldShowPlanBuilder && (
           <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold">Liming Plans</h2>
+              {plans.length > 0 && (
+                <Button onClick={addPlan} size="sm" variant="outline">
+                  <Plus className="mr-2 h-4 w-4" /> Add Plan
+                </Button>
+              )}
+            </div>
             {plans.length === 0 ? (
-              <div className="text-center py-16 border-2 border-dashed rounded-xl bg-card/50 hover:bg-card/80 transition-colors">
-                <div className="max-w-sm mx-auto space-y-4">
-                  <p className="text-muted-foreground text-lg">No liming plans defined yet.</p>
-                  <Button onClick={addPlan} size="lg" className="w-full">
+              <div className="text-center py-20 border-2 border-dashed rounded-xl bg-gradient-to-br from-card/50 to-card/30 hover:from-card/70 hover:to-card/50 transition-all duration-300">
+                <div className="max-w-sm mx-auto space-y-6">
+                  <div className="flex justify-center">
+                    <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Plus className="h-8 w-8 text-primary" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-foreground text-lg font-semibold">No liming plans defined yet</p>
+                    <p className="text-muted-foreground text-sm">Create your first plan to get started</p>
+                  </div>
+                  <Button onClick={addPlan} size="lg" className="w-full h-12 text-base font-semibold shadow-md">
                     <Plus className="mr-2 h-5 w-5" /> Create First Plan
                   </Button>
                 </div>
@@ -230,7 +254,7 @@ export default function LimingApp() {
               <Button
                 onClick={addPlan}
                 variant="outline"
-                className="w-full border-dashed border-2 h-14 text-base font-medium hover:border-primary/50 hover:bg-muted/50"
+                className="w-full border-dashed border-2 h-14 text-base font-semibold hover:border-primary hover:bg-primary/5 hover:text-primary transition-all"
               >
                 <Plus className="mr-2 h-5 w-5" /> Add Another Plan
               </Button>
