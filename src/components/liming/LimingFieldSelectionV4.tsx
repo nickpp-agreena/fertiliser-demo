@@ -373,17 +373,17 @@ export function LimingFieldSelectionV4({
 
             {/* Search Bar */}
             <div className="flex flex-col items-start gap-2 w-[212px] h-[40px]">
-              <div className="box-border flex flex-row justify-between items-center p-[10px_16px] gap-4 w-[212px] h-[40px] bg-white border border-[#333333] rounded-[4px]">
+              <div className="box-border flex flex-row justify-between items-center pl-4 pr-3 py-[10px] gap-4 w-[212px] h-[40px] bg-white border border-[#333333] rounded-[4px]">
                 <input
                   data-search-input
                   type="text"
                   placeholder="Search field ID or name"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 text-[14px] leading-[150%] font-medium text-[#747474] placeholder:text-[#747474] bg-transparent border-0 outline-0"
+                  className="flex-1 text-[14px] leading-[150%] font-medium text-[#747474] placeholder:text-[#747474] bg-transparent border-0 outline-0 min-w-0"
                   autoFocus={false}
                 />
-                <div className="flex flex-col justify-center items-center w-4 h-4">
+                <div className="flex flex-col justify-center items-center flex-shrink-0">
                   <Search className="w-[14px] h-[14px] text-[#333333]" />
                 </div>
               </div>
