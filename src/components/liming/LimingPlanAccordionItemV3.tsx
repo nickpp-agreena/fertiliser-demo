@@ -28,6 +28,7 @@ interface LimingPlanAccordionItemV3Props {
   onMarkNotLimed: (fieldIds: string[]) => void
   onUnmarkNotLimed?: (fieldIds: string[]) => void
   hideDots?: boolean
+  onMapClick?: () => void
 }
 
 export function LimingPlanAccordionItemV3({
@@ -45,6 +46,7 @@ export function LimingPlanAccordionItemV3({
   onMarkNotLimed,
   onUnmarkNotLimed,
   hideDots = false,
+  onMapClick,
 }: LimingPlanAccordionItemV3Props) {
   const [selectedFieldIds, setSelectedFieldIds] = useState<string[]>(plan.field_ids)
   const [lastSavedPlan, setLastSavedPlan] = useState<LimingPlanV3 | null>(null)
@@ -333,6 +335,7 @@ export function LimingPlanAccordionItemV3({
             plans={plans}
             notLimedFieldIds={notLimedFieldIds}
             onMarkNotLimed={onMarkNotLimed}
+            onMapClick={onMapClick}
           />
         ) : (
           <LimingFieldSelectionV3

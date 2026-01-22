@@ -24,6 +24,7 @@ interface LimingFieldSelectionV4Props {
   plans: LimingPlanV3[]
   notLimedFieldIds: Set<string>
   onMarkNotLimed: (fieldIds: string[]) => void
+  onMapClick?: () => void
 }
 
 type SortColumn = "name" | "hectares"
@@ -37,6 +38,7 @@ export function LimingFieldSelectionV4({
   plans,
   notLimedFieldIds,
   onMarkNotLimed,
+  onMapClick,
 }: LimingFieldSelectionV4Props) {
   // Find which plan (if any) has this field assigned for the same year
   const getFieldAssignment = (fieldId: string) => {
@@ -486,7 +488,10 @@ export function LimingFieldSelectionV4({
                 <div className="flex flex-col justify-center items-start p-4 w-[133px]">
                   <button 
                     className="flex flex-row items-center gap-2 text-[#4730DB] underline text-[14px] leading-[150%] font-medium hover:no-underline"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onMapClick?.()
+                    }}
                   >
                     <LocationDotIcon size={16} className="text-[#4730DB]" />
                     <span>Map</span>

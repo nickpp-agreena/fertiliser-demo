@@ -37,8 +37,19 @@ export default function LimingAppV4() {
     lastAppliedYear: null,
   })
   const [notLimedFieldIds, setNotLimedFieldIds] = useState<Set<string>>(new Set())
+  const [mapPin, setMapPin] = useState<{id: string, x: number, y: number} | null>(null)
 
   const availableYears = getAvailableYears()
+
+  // Handle adding a map pin (easter egg) - replaces existing pin
+  const handleAddMapPin = () => {
+    const newPin = {
+      id: Math.random().toString(36).substring(2, 9),
+      x: Math.random() * 80 + 10, // 10% to 90% of width
+      y: Math.random() * 80 + 10, // 10% to 90% of height
+    }
+    setMapPin(newPin) // Replace old pin with new one
+  }
 
   // Check if we should show plan builder
   const shouldShowPlanBuilder = 
@@ -369,6 +380,7 @@ export default function LimingAppV4() {
                       onMarkNotLimed={markFieldsAsNotLimed}
                       onUnmarkNotLimed={unmarkFieldsAsNotLimed}
                       hideDots={true}
+                      onMapClick={handleAddMapPin}
                     />
                   ))}
                 </Accordion>
@@ -436,7 +448,7 @@ export default function LimingAppV4() {
         left: 'max(calc((100vw - 1440px) / 2 + 720px), 720px)'
       }}
     >
-      <AgreenaMapPanel />
+      <AgreenaMapPanel pin={mapPin} />
     </div>
     </>
   )
