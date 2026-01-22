@@ -6,6 +6,7 @@ import LimingApp from './LimingApp.tsx'
 import LimingAppV2 from './LimingAppV2.tsx'
 import LimingAppV3 from './LimingAppV3.tsx'
 import { DemoSelector } from './components/DemoSelector'
+import { AgreenaTestPage } from './AgreenaTestPage.tsx'
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { VersionProvider } from "@/components/version-provider"
@@ -18,7 +19,9 @@ const versionParam = urlParams.get('version')
 // Determine which app to render
 let DemoApp: React.ComponentType
 
-if (demoParam === 'liming') {
+if (demoParam === 'agreena-test') {
+  DemoApp = AgreenaTestPage
+} else if (demoParam === 'liming') {
   if (versionParam === 'v3') {
     DemoApp = LimingAppV3
   } else if (versionParam === 'v2') {
@@ -33,9 +36,12 @@ if (demoParam === 'liming') {
   DemoApp = DemoSelector
 }
 
+// Use Agreena theme for agreena-test demo, otherwise use shadcn
+const defaultTheme = demoParam === 'agreena-test' ? 'agreena' : 'shadcn'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="shadcn" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme={defaultTheme} storageKey="vite-ui-theme">
       <VersionProvider defaultVersion="classic" storageKey="vite-ui-version">
         <DemoApp />
       </VersionProvider>
