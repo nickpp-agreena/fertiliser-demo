@@ -18,7 +18,6 @@ interface LimingFieldSelectionV2Props {
   plans: LimingPlanV2[]
   notLimedFieldIds: Set<string>
   onMarkNotLimed: (fieldIds: string[]) => void
-  onUnmarkNotLimed?: (fieldIds: string[]) => void
 }
 
 type SortOption = "name-asc" | "name-desc" | "hectares-desc" | "hectares-asc"
@@ -32,7 +31,6 @@ export function LimingFieldSelectionV2({
   plans,
   notLimedFieldIds,
   onMarkNotLimed,
-  onUnmarkNotLimed,
 }: LimingFieldSelectionV2Props) {
   // Helper to get plan by ID
   const getPlan = (planId: string | null) => {
@@ -69,7 +67,6 @@ export function LimingFieldSelectionV2({
   const [showPlanFilter, setShowPlanFilter] = useState(false)
   const [selectedPlanFilters, setSelectedPlanFilters] = useState<Set<string>>(new Set())
   const NOT_LIMED_FILTER_ID = "__not_limed__"
-  const UNASSIGNED_FILTER_ID = "__unassigned__"
 
   // Get all unique plans for the current year (for filtering)
   const availablePlansForYear = useMemo(() => {
@@ -87,25 +84,15 @@ export function LimingFieldSelectionV2({
         field.id.toLowerCase().includes(query)
       )
     }
-    // Apply plan filter (including "not limed" and "unassigned" options)
+    // Apply plan filter (including "not limed" option)
     if (selectedPlanFilters.size > 0) {
       const hasNotLimedFilter = selectedPlanFilters.has(NOT_LIMED_FILTER_ID)
-      const hasUnassignedFilter = selectedPlanFilters.has(UNASSIGNED_FILTER_ID)
-      const planFilters = Array.from(selectedPlanFilters).filter(id => id !== NOT_LIMED_FILTER_ID && id !== UNASSIGNED_FILTER_ID)
+      const planFilters = Array.from(selectedPlanFilters).filter(id => id !== NOT_LIMED_FILTER_ID)
       
       result = result.filter(field => {
         // Check if field matches "not limed" filter
         if (hasNotLimedFilter && notLimedFieldIds.has(field.id)) {
           return true
-        }
-        // Check if field matches "unassigned" filter
-        if (hasUnassignedFilter) {
-          const assignedPlan = getFieldAssignment(field.id)
-          const isAssignedToThis = plans.find(p => p.id === planId)?.field_ids.includes(field.id) || false
-          const isUnassigned = !notLimedFieldIds.has(field.id) && !assignedPlan && !isAssignedToThis
-          if (isUnassigned) {
-            return true
-          }
         }
         // Check if field matches plan filters
         if (planFilters.length > 0) {
@@ -116,22 +103,12 @@ export function LimingFieldSelectionV2({
             return true
           }
         }
-        // If only specific filters are selected (no plan filters), show matching fields
-        if (planFilters.length === 0) {
-          if (hasNotLimedFilter && hasUnassignedFilter) {
-            return notLimedFieldIds.has(field.id) || (!notLimedFieldIds.has(field.id) && !getFieldAssignment(field.id) && !plans.find(p => p.id === planId)?.field_ids.includes(field.id))
-          }
-          if (hasNotLimedFilter) {
-            return notLimedFieldIds.has(field.id)
-          }
-          if (hasUnassignedFilter) {
-            const assignedPlan = getFieldAssignment(field.id)
-            const isAssignedToThis = plans.find(p => p.id === planId)?.field_ids.includes(field.id) || false
-            return !notLimedFieldIds.has(field.id) && !assignedPlan && !isAssignedToThis
-          }
+        // If only "not limed" filter is selected, show matching fields
+        if (planFilters.length === 0 && hasNotLimedFilter) {
+          return notLimedFieldIds.has(field.id)
         }
         // If only plan filters are selected, only show fields matching those plans
-        if (!hasNotLimedFilter && !hasUnassignedFilter && planFilters.length > 0) {
+        if (!hasNotLimedFilter && planFilters.length > 0) {
           const assignedPlan = getFieldAssignment(field.id)
           const isAssignedToThis = plans.find(p => p.id === planId)?.field_ids.includes(field.id) || false
           const planForField = isAssignedToThis ? plans.find(p => p.id === planId) : assignedPlan
@@ -176,21 +153,6 @@ export function LimingFieldSelectionV2({
     onSelectionChange(visibleFieldIds)
   }
 
-  // Handle select all unassigned (fields not assigned to any plan for the same year, including "not limed" so they can be reassigned)
-  const handleSelectAllUnassigned = () => {
-    const unassignedFieldIds = fields
-      .filter(field => {
-        // Check if field is assigned to any other plan for the same year
-        const isAssigned = plans.some(p => 
-          p.id !== planId && 
-          p.year === planYear && 
-          p.field_ids.includes(field.id)
-        )
-        return !isAssigned
-      })
-      .map(field => field.id)
-    onSelectionChange(unassignedFieldIds)
-  }
 
   // Handle mark as not limed
   const handleMarkNotLimed = () => {
@@ -265,36 +227,18 @@ export function LimingFieldSelectionV2({
           <Badge variant="outline" className="text-xs px-2.5 py-1">
             {selectedFieldIds.length} of {fields.length} selected
           </Badge>
-          <Button onClick={handleSelectAllUnassigned} variant="outline" size="sm" className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground">
-            Select Unassigned
-          </Button>
           <Button onClick={handleSelectAll} variant="outline" size="sm">
             Select All
           </Button>
-          {selectedFieldIds.some(id => notLimedFieldIds.has(id)) && onUnmarkNotLimed ? (
-            <Button 
-              onClick={() => {
-                const notLimedSelected = selectedFieldIds.filter(id => notLimedFieldIds.has(id))
-                onUnmarkNotLimed(notLimedSelected)
-                onSelectionChange(selectedFieldIds.filter(id => !notLimedFieldIds.has(id)))
-              }}
-              variant="outline" 
-              size="sm"
-              className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
-            >
-              Unmark as Not Limed
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleMarkNotLimed} 
-              variant="outline" 
-              size="sm"
-              disabled={selectedFieldIds.length === 0}
-              className="border-muted-foreground/30 text-muted-foreground hover:bg-muted hover:text-muted-foreground"
-            >
-              Mark as Not Limed
-            </Button>
-          )}
+          <Button 
+            onClick={handleMarkNotLimed} 
+            variant="outline" 
+            size="sm"
+            disabled={selectedFieldIds.length === 0}
+            className="border-muted-foreground/30 text-muted-foreground hover:bg-muted hover:text-muted-foreground"
+          >
+            Mark as Not Limed
+          </Button>
           <Button onClick={() => onSelectionChange([])} variant="ghost" size="sm">
             Clear
           </Button>
@@ -357,20 +301,6 @@ export function LimingFieldSelectionV2({
                     )}
                   </div>
                   <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                    {/* Unassigned Filter Option */}
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="filter-unassigned"
-                        checked={selectedPlanFilters.has(UNASSIGNED_FILTER_ID)}
-                        onCheckedChange={() => handlePlanFilterToggle(UNASSIGNED_FILTER_ID)}
-                      />
-                      <Label
-                        htmlFor="filter-unassigned"
-                        className="text-sm cursor-pointer flex items-center gap-2 flex-1"
-                      >
-                        Unassigned
-                      </Label>
-                    </div>
                     {/* Not Limed Filter Option */}
                     <div className="flex items-center space-x-2">
                       <Checkbox
@@ -544,8 +474,9 @@ export function LimingFieldSelectionV2({
                       </p>
                     </>
                   ) : (
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 text-muted-foreground/70 border-muted-foreground/30 bg-muted/10">
-                      Unassigned
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 border-amber-500/40 bg-amber-50/50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400">
+                      <CircleSlash className="h-2.5 w-2.5 mr-1" />
+                      Not Limed
                     </Badge>
                   )}
                 </div>

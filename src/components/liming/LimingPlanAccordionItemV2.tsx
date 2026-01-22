@@ -325,7 +325,6 @@ export function LimingPlanAccordionItemV2({
           plans={plans}
           notLimedFieldIds={notLimedFieldIds}
           onMarkNotLimed={onMarkNotLimed}
-          onUnmarkNotLimed={onUnmarkNotLimed}
         />
 
         {/* Total Area and Tonnes - Less Visual Impact */}

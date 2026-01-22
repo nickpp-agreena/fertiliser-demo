@@ -11,12 +11,23 @@ import { FIELD_DATA } from "@/lib/fieldData"
 
 const generateId = () => Math.random().toString(36).substring(2, 9)
 
+// Legacy plan type that may have inhibitor properties at plan level
+type LegacyPlan = Plan & {
+  hasInhibitor?: boolean
+  inhibitorAmount?: number
+}
+
 // Migration function to convert old plan format to new format
-const migratePlan = (plan: Plan): Plan => {
+const migratePlan = (plan: Plan | LegacyPlan): Plan => {
+  // Type guard to check if plan has legacy inhibitor properties
+  const hasLegacyInhibitor = (p: Plan | LegacyPlan): p is LegacyPlan => {
+    return 'hasInhibitor' in p || 'inhibitorAmount' in p
+  }
+
   // If plan already has fertilizers array, check if inhibitor needs to be moved
   if (plan.fertilizers && Array.isArray(plan.fertilizers)) {
     // If plan has inhibitor at plan level but fertilizers don't, move it to first fertilizer
-    if ((plan.hasInhibitor || plan.inhibitorAmount) && plan.fertilizers.length > 0) {
+    if (hasLegacyInhibitor(plan) && (plan.hasInhibitor || plan.inhibitorAmount) && plan.fertilizers.length > 0) {
       const firstFertilizer = plan.fertilizers[0]
       if (!firstFertilizer.hasInhibitor && !firstFertilizer.inhibitorAmount) {
         const updatedFertilizers = plan.fertilizers.map((f, idx) => 
@@ -26,19 +37,23 @@ const migratePlan = (plan: Plan): Plan => {
         return {
           ...planWithoutInhibitor,
           fertilizers: updatedFertilizers
-        }
+        } as Plan
       }
     }
     // Remove inhibitor from plan if it exists
-    if (plan.hasInhibitor !== undefined || plan.inhibitorAmount !== undefined) {
+    if (hasLegacyInhibitor(plan) && (plan.hasInhibitor !== undefined || plan.inhibitorAmount !== undefined)) {
       const { hasInhibitor, inhibitorAmount, ...planWithoutInhibitor } = plan
-      return planWithoutInhibitor
+      return planWithoutInhibitor as Plan
     }
     return plan
   }
 
   // Migrate from old format
   const fertilizers: Fertilizer[] = []
+  
+  // Get legacy inhibitor values if they exist
+  const legacyHasInhibitor = hasLegacyInhibitor(plan) ? plan.hasInhibitor : undefined
+  const legacyInhibitorAmount = hasLegacyInhibitor(plan) ? plan.inhibitorAmount : undefined
   
   if (plan.type === 'synthetic' && (plan.n !== undefined || plan.p !== undefined || plan.k !== undefined)) {
     fertilizers.push({
@@ -49,8 +64,8 @@ const migratePlan = (plan: Plan): Plan => {
       k: plan.k,
       kUnit: plan.kUnit || 'K',
       // Move inhibitor from plan to first fertilizer
-      hasInhibitor: plan.hasInhibitor,
-      inhibitorAmount: plan.inhibitorAmount
+      hasInhibitor: legacyHasInhibitor,
+      inhibitorAmount: legacyInhibitorAmount
     })
   } else if (plan.type === 'organic' && plan.organicType) {
     fertilizers.push({
@@ -59,8 +74,8 @@ const migratePlan = (plan: Plan): Plan => {
       organicForm: plan.organicForm || 'solid',
       applicationRate: plan.applicationRate,
       // Move inhibitor from plan to first fertilizer
-      hasInhibitor: plan.hasInhibitor,
-      inhibitorAmount: plan.inhibitorAmount
+      hasInhibitor: legacyHasInhibitor,
+      inhibitorAmount: legacyInhibitorAmount
     })
   } else if (plan.type === 'synthetic') {
     // Empty synthetic plan - add one empty fertilizer
@@ -72,8 +87,8 @@ const migratePlan = (plan: Plan): Plan => {
       k: 0,
       kUnit: 'K',
       // Move inhibitor from plan to first fertilizer
-      hasInhibitor: plan.hasInhibitor,
-      inhibitorAmount: plan.inhibitorAmount
+      hasInhibitor: legacyHasInhibitor,
+      inhibitorAmount: legacyInhibitorAmount
     })
   } else if (plan.type === 'organic') {
     // Empty organic plan - add one empty fertilizer
@@ -83,10 +98,10 @@ const migratePlan = (plan: Plan): Plan => {
       organicForm: 'solid',
       applicationRate: 0,
       // Move inhibitor from plan to first fertilizer
-      hasInhibitor: plan.hasInhibitor,
-      inhibitorAmount: plan.inhibitorAmount
+      hasInhibitor: legacyHasInhibitor,
+      inhibitorAmount: legacyInhibitorAmount
     })
-  } else if (plan.hasInhibitor || plan.inhibitorAmount) {
+  } else if (hasLegacyInhibitor(plan) && (plan.hasInhibitor || plan.inhibitorAmount)) {
     // Plan has inhibitor but no fertilizers - create a synthetic fertilizer with inhibitor
     fertilizers.push({
       id: generateId(),
@@ -100,11 +115,17 @@ const migratePlan = (plan: Plan): Plan => {
     })
   }
 
-  // Remove inhibitor fields from plan
-  const { hasInhibitor, inhibitorAmount, ...planWithoutInhibitor } = plan
+  // Remove inhibitor fields from plan if they exist
+  if (hasLegacyInhibitor(plan)) {
+    const { hasInhibitor, inhibitorAmount, ...planWithoutInhibitor } = plan
+    return {
+      ...planWithoutInhibitor,
+      fertilizers
+    } as Plan
+  }
 
   return {
-    ...planWithoutInhibitor,
+    ...plan,
     fertilizers
   }
 }

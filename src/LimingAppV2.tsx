@@ -4,11 +4,9 @@ import type { Field, LimingPlanV2, LimingHistoryV2 } from "@/lib/limingTypes"
 import { LimingPlanAccordionItemV2 } from "@/components/liming/LimingPlanAccordionItemV2"
 import { LimingHistoryGatesV2 } from "@/components/liming/LimingHistoryGatesV2"
 import { LimingFieldsViewV2 } from "@/components/liming/LimingFieldsViewV2"
-import { MarkNotLimedDialog } from "@/components/liming/MarkNotLimedDialog"
-import { NotLimedFieldsAccordion } from "@/components/liming/NotLimedFieldsAccordion"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Plus, CheckCircle2, Save, CircleSlash } from "lucide-react"
+import { Plus, CheckCircle2, Save } from "lucide-react"
 import { FIELD_DATA } from "@/lib/fieldData"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -40,15 +38,39 @@ export default function LimingAppV2() {
     lastAppliedYear: null,
   })
   const [notLimedFieldIds, setNotLimedFieldIds] = useState<Set<string>>(new Set())
-  const [showMarkNotLimedDialog, setShowMarkNotLimedDialog] = useState(false)
 
   const availableYears = getAvailableYears()
+
+  // Check if we should show plan builder
+  const shouldShowPlanBuilder = 
+    history.appliedLast20Years === true && history.lastAppliedYear !== null
+
+  // Initialize all fields as "not limed" when plan builder becomes visible
+  useEffect(() => {
+    if (shouldShowPlanBuilder) {
+      // Mark all fields as "not limed" when plan builder is shown
+      setNotLimedFieldIds(new Set(fields.map(f => f.id)))
+    }
+  }, [shouldShowPlanBuilder, fields])
+
+  // Auto-mark all fields as "not limed" when user says "No"
+  useEffect(() => {
+    if (history.appliedLast20Years === false) {
+      // Mark all fields as "not limed" when user confirms no liming
+      setNotLimedFieldIds(new Set(fields.map(f => f.id)))
+    }
+  }, [history.appliedLast20Years, fields])
 
   // Update fields when field count changes
   const handleFieldCountChange = (count: number) => {
     const validCount = Math.max(1, Math.min(50, count))
     setFieldCount(validCount)
-    setFields(INITIAL_FIELDS.slice(0, validCount))
+    const newFields = INITIAL_FIELDS.slice(0, validCount)
+    setFields(newFields)
+    // If plan builder is visible, mark new fields as "not limed"
+    if (shouldShowPlanBuilder) {
+      setNotLimedFieldIds(new Set(newFields.map(f => f.id)))
+    }
   }
 
   // Mark fields as not limed
@@ -75,14 +97,6 @@ export default function LimingAppV2() {
     })
   }
 
-  // Get assigned field IDs (for filtering in dialog)
-  const getAssignedFieldIds = (): Set<string> => {
-    const assigned = new Set<string>()
-    plans.forEach(plan => {
-      plan.field_ids.forEach(id => assigned.add(id))
-    })
-    return assigned
-  }
 
   // Calculate area helper
   const calculateArea = (fieldIds: string[]): number => {
@@ -125,15 +139,27 @@ export default function LimingAppV2() {
 
   // Assign fields to plan with year-based exclusivity
   // Automatically unmark fields as "not limed" when assigned to a plan
+  // Automatically mark fields as "not limed" when removed from plans
   const assignFieldsToPlan = (planId: string, year: string, fieldIds: string[]) => {
-    // Unmark fields as "not limed" when they're assigned to a plan
-    unmarkFieldsAsNotLimed(fieldIds)
-    
     setPlans(prev => {
-      // First, remove these field IDs from any other plan in the same year
+      // Get the current plan's field IDs before update
+      const currentPlan = prev.find(p => p.id === planId)
+      const previousFieldIdsForThisPlan = currentPlan?.field_ids || []
+      
+      // Track fields that are being removed from OTHER plans (same year, different plan)
+      const fieldsBeingRemovedFromOtherPlans: string[] = []
+      
+      // First, remove field IDs that are being assigned to this plan from any other plan in the same year
       const plansWithRemovedFields = prev.map(plan => {
         if (plan.year === year && plan.id !== planId) {
-          const remainingFieldIds = plan.field_ids.filter(id => !fieldIds.includes(id))
+          const previousFieldIds = plan.field_ids
+          const remainingFieldIds = previousFieldIds.filter(id => !fieldIds.includes(id))
+          // Track fields that were removed from this other plan
+          previousFieldIds.forEach(id => {
+            if (fieldIds.includes(id) && !fieldsBeingRemovedFromOtherPlans.includes(id)) {
+              fieldsBeingRemovedFromOtherPlans.push(id)
+            }
+          })
           return {
             ...plan,
             field_ids: remainingFieldIds,
@@ -143,8 +169,8 @@ export default function LimingAppV2() {
         return plan
       })
 
-      // Then, add field IDs to the selected plan
-      return plansWithRemovedFields.map(plan => {
+      // Then, update the selected plan with new field IDs
+      const updatedPlans = plansWithRemovedFields.map(plan => {
         if (plan.id === planId) {
           const newArea = calculateArea(fieldIds)
           return {
@@ -155,6 +181,22 @@ export default function LimingAppV2() {
         }
         return plan
       })
+      
+      // Track fields that were removed from the current plan (were assigned but not in new list)
+      const fieldsRemovedFromThisPlan = previousFieldIdsForThisPlan.filter(
+        id => !fieldIds.includes(id)
+      )
+      
+      // Mark fields as "not limed" if they were removed from this plan or other plans
+      const allFieldsBeingRemoved = [...fieldsRemovedFromThisPlan, ...fieldsBeingRemovedFromOtherPlans]
+      if (allFieldsBeingRemoved.length > 0) {
+        markFieldsAsNotLimed(allFieldsBeingRemoved)
+      }
+      
+      // Unmark fields as "not limed" when they're assigned to a plan
+      unmarkFieldsAsNotLimed(fieldIds)
+      
+      return updatedPlans
     })
     
     // Close accordion after applying
@@ -162,15 +204,30 @@ export default function LimingAppV2() {
   }
 
   const deletePlan = (planId: string) => {
-    setPlans(prev => prev.filter(p => p.id !== planId))
+    setPlans(prev => {
+      const planToDelete = prev.find(p => p.id === planId)
+      if (planToDelete && planToDelete.field_ids.length > 0) {
+        // Mark fields as "not limed" when plan is deleted
+        markFieldsAsNotLimed(planToDelete.field_ids)
+      }
+      return prev.filter(p => p.id !== planId)
+    })
   }
 
   const duplicatePlan = (plan: LimingPlanV2) => {
     const newPlanId = generateId()
+    
+    // Find a different year for the duplicate to avoid conflicts
+    // Try to use the next available year, or fall back to the same year if all are taken
+    const currentYearIndex = availableYears.indexOf(plan.year)
+    const nextYearIndex = currentYearIndex > 0 ? currentYearIndex - 1 : currentYearIndex
+    const duplicateYear = availableYears[nextYearIndex] || plan.year
+    
     const newPlan: LimingPlanV2 = {
       ...plan,
       id: newPlanId,
       name: `Copy of ${plan.name}`,
+      year: duplicateYear, // Use a different year to avoid field conflicts
       field_ids: [], // Clear field assignments for duplicate
       area_ha: 0,
     }
@@ -189,27 +246,16 @@ export default function LimingAppV2() {
     }, 100)
   }
 
-  // Check if we should show plan builder
-  const shouldShowPlanBuilder = 
-    history.appliedLast20Years === true && history.lastAppliedYear !== null
-
-  // Get unassigned fields (excluding "not limed" fields)
-  const getUnassignedFields = (): Field[] => {
-    if (!shouldShowPlanBuilder) return []
-    
-    // Get all field IDs assigned to plans
-    const assignedFieldIds = new Set<string>()
-    plans.forEach(plan => {
-      plan.field_ids.forEach(id => assignedFieldIds.add(id))
-    })
-    
-    return fields.filter(f => 
-      !assignedFieldIds.has(f.id) && 
-      !notLimedFieldIds.has(f.id)
-    )
+  // Helper to check if a plan is valid (has material_type, rate > 0, and at least 1 field)
+  const isValidPlan = (plan: LimingPlanV2): boolean => {
+    return plan.material_type !== null && 
+           plan.application_rate_t_per_ha > 0 && 
+           plan.field_ids.length > 0
   }
 
-  const unassignedFields = getUnassignedFields()
+  // Check if at least one valid plan exists
+  const hasValidPlan = plans.some(isValidPlan)
+
 
   // Prepare output JSON
   const outputData = {
@@ -260,19 +306,9 @@ export default function LimingAppV2() {
                 Liming Plans
               </h2>
               {(plans.length > 0 || notLimedFieldIds.size > 0) && (
-                <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => setShowMarkNotLimedDialog(true)} 
-                    size="sm" 
-                    variant="outline" 
-                    className="border-2 hover:border-primary hover:bg-primary hover:text-primary-foreground"
-                  >
-                    <CircleSlash className="mr-2 h-4 w-4" /> Mark Fields without liming
-                  </Button>
-                  <Button onClick={addPlan} size="sm" variant="outline" className="border-2 hover:border-primary hover:bg-primary hover:text-primary-foreground">
-                    <Plus className="mr-2 h-4 w-4" /> Add Plan
-                  </Button>
-                </div>
+                <Button onClick={addPlan} size="sm" variant="outline" className="border-2 hover:border-primary hover:bg-primary hover:text-primary-foreground">
+                  <Plus className="mr-2 h-4 w-4" /> Add Plan
+                </Button>
               )}
             </div>
             {plans.length === 0 && notLimedFieldIds.size === 0 ? (
@@ -287,17 +323,9 @@ export default function LimingAppV2() {
                     <p className="text-foreground text-lg font-semibold">No liming plans defined yet</p>
                     <p className="text-muted-foreground text-sm">Create your first plan to get started</p>
                   </div>
-                  <div className="space-y-3 w-full">
+                  <div className="w-full">
                     <Button onClick={addPlan} size="lg" className="w-full h-12 text-base font-semibold shadow-md">
                       <Plus className="mr-2 h-5 w-5" /> Create First Plan
-                    </Button>
-                    <Button 
-                      onClick={() => setShowMarkNotLimedDialog(true)} 
-                      variant="outline" 
-                      size="lg" 
-                      className="w-full h-12 text-base font-semibold border-2 hover:bg-muted hover:border-muted-foreground/40"
-                    >
-                      <CircleSlash className="mr-2 h-5 w-5" /> or mark fields without liming
                     </Button>
                   </div>
                 </div>
@@ -327,26 +355,6 @@ export default function LimingAppV2() {
                     onUnmarkNotLimed={unmarkFieldsAsNotLimed}
                   />
                 ))}
-                {/* Not Limed Fields Section - Visible when plans exist OR when fields are marked as not limed */}
-                {(plans.length > 0 || notLimedFieldIds.size > 0) && (
-                  <NotLimedFieldsAccordion
-                    fields={fields}
-                    notLimedFieldIds={notLimedFieldIds}
-                    assignedFieldIds={getAssignedFieldIds()}
-                    onMarkNotLimed={(fieldIds) => {
-                      markFieldsAsNotLimed(fieldIds)
-                      // Close the accordion after marking fields
-                      setOpenAccordionItems(prev => prev.filter(id => id !== "not-limed-fields"))
-                    }}
-                    onUnmarkNotLimed={(fieldIds) => {
-                      unmarkFieldsAsNotLimed(fieldIds)
-                      // Close the accordion after unmarking fields
-                      setOpenAccordionItems(prev => prev.filter(id => id !== "not-limed-fields"))
-                    }}
-                    isOpen={openAccordionItems.includes("not-limed-fields")}
-                    onClose={() => setOpenAccordionItems(prev => prev.filter(id => id !== "not-limed-fields"))}
-                  />
-                )}
               </Accordion>
             )}
 
@@ -360,8 +368,8 @@ export default function LimingAppV2() {
               </Button>
             )}
 
-            {/* Success Message - All Fields Assigned or Marked as Not Limed */}
-            {unassignedFields.length === 0 && plans.length > 0 && (
+            {/* Success Message - At least one valid plan exists */}
+            {hasValidPlan && (
               <Card className="border-2 border-green-500/60 bg-gradient-to-br from-green-50/90 to-green-50/40 dark:from-green-950/30 dark:to-green-950/15 shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
@@ -374,7 +382,7 @@ export default function LimingAppV2() {
                           <span>Liming Plans Applied</span>
                         </h3>
                         <p className="text-sm text-green-800/90 dark:text-green-200/90 font-medium leading-relaxed">
-                          All fields have been assigned to liming plans or marked as not limed. Your configuration is complete and ready to be saved.
+                          You have created at least one liming plan with material type, application rate, and assigned fields. Your configuration is complete and ready to be saved.
                         </p>
                       </div>
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-2 border-t border-green-500/20">
@@ -391,7 +399,7 @@ export default function LimingAppV2() {
                           Save and Exit
                         </Button>
                         <p className="text-xs text-green-700/80 dark:text-green-300/80 font-medium sm:ml-2">
-                          Click to save your liming plans and return to the previous screen.
+                          Save your liming plans and return to the previous screen.
                         </p>
                       </div>
                     </div>
@@ -413,7 +421,7 @@ export default function LimingAppV2() {
                 <AccordionItem value="fields-view" className="border-b-0">
                   <AccordionTrigger>Show Fields View</AccordionTrigger>
                   <AccordionContent>
-                    <LimingFieldsViewV2 fields={fields} plans={plans} notLimedFieldIds={notLimedFieldIds} />
+                    <LimingFieldsViewV2 fields={fields} plans={plans} notLimedFieldIds={notLimedFieldIds} availableYears={availableYears} />
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -442,24 +450,6 @@ export default function LimingAppV2() {
           </Card>
         )}
 
-        {/* Mark Not Limed Dialog */}
-        <MarkNotLimedDialog
-          isOpen={showMarkNotLimedDialog}
-          onClose={() => setShowMarkNotLimedDialog(false)}
-          onConfirm={(fieldIds) => {
-            markFieldsAsNotLimed(fieldIds)
-            // Close the accordion after marking fields
-            setOpenAccordionItems(prev => prev.filter(id => id !== "not-limed-fields"))
-          }}
-          onUnmark={(fieldIds) => {
-            unmarkFieldsAsNotLimed(fieldIds)
-            // Close the accordion after unmarking fields
-            setOpenAccordionItems(prev => prev.filter(id => id !== "not-limed-fields"))
-          }}
-          fields={fields}
-          notLimedFieldIds={notLimedFieldIds}
-          assignedFieldIds={getAssignedFieldIds()}
-        />
       </main>
     </div>
   )

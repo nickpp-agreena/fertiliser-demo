@@ -4,7 +4,7 @@ import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MarkNotLimedDialog } from "./MarkNotLimedDialog"
-import { CircleSlash, Plus, MapPin, Pencil } from "lucide-react"
+import { CircleSlash, MapPin, Pencil } from "lucide-react"
 
 interface NotLimedFieldsAccordionProps {
   fields: Field[]
@@ -67,16 +67,8 @@ export function NotLimedFieldsAccordion({
                   </div>
                   <div className="space-y-2">
                     <p className="text-foreground font-semibold">No fields marked as not limed</p>
-                    <p className="text-muted-foreground text-sm">Mark fields that won't receive liming treatment</p>
+                    <p className="text-muted-foreground text-sm">All fields have been assigned to liming plans</p>
                   </div>
-                  <Button 
-                    onClick={() => setShowDialog(true)} 
-                    variant="outline" 
-                    className="w-full border-2"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Mark Fields as Not Limed
-                  </Button>
                 </div>
               </div>
             ) : (
