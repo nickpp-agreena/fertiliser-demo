@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import LimingApp from './LimingApp.tsx'
 import LimingAppV2 from './LimingAppV2.tsx'
+import LimingAppV3 from './LimingAppV3.tsx'
 import { DemoSelector } from './components/DemoSelector'
 
 import { ThemeProvider } from "@/components/theme-provider"
@@ -18,7 +19,9 @@ const versionParam = urlParams.get('version')
 let DemoApp: React.ComponentType
 
 if (demoParam === 'liming') {
-  if (versionParam === 'v2') {
+  if (versionParam === 'v3') {
+    DemoApp = LimingAppV3
+  } else if (versionParam === 'v2') {
     DemoApp = LimingAppV2
   } else {
     DemoApp = LimingApp // V1

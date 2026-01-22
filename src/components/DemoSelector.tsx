@@ -26,7 +26,7 @@ export function DemoSelector() {
           <p className="text-muted-foreground text-lg">Choose a demo to explore field definition and planning features</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Fertiliser Demo */}
           <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary/50 flex flex-col" onClick={() => navigateToDemo('fertiliser')}>
             <CardHeader className="flex-1">
@@ -64,7 +64,25 @@ export function DemoSelector() {
           </Card>
 
           {/* Liming V2 Demo */}
-          <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary/50 flex flex-col relative" onClick={() => navigateToDemo('liming', 'v2')}>
+          <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary/50 flex flex-col" onClick={() => navigateToDemo('liming', 'v2')}>
+            <CardHeader className="flex-1">
+              <div className="h-12 w-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#6B7A6B20', color: '#6B7A6B' }}>
+                <Package2 className="h-6 w-6" />
+              </div>
+              <CardTitle>Liming Plans V2</CardTitle>
+              <CardDescription>
+                Enhanced liming demo with 20-year history, "not limed" field management, and improved UX patterns.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0 pb-6">
+              <Button className="w-full" onClick={(e) => { e.stopPropagation(); navigateToDemo('liming', 'v2') }}>
+                Open Demo
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Liming V3 Demo */}
+          <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary/50 flex flex-col relative" onClick={() => navigateToDemo('liming', 'v3')}>
             <div className="absolute top-4 right-4 w-8 h-8 z-10">
               <svg fill="#ef4444" viewBox="0 0 612.003 612.003" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                 <path d="M608.067,333.255l-44.973-71.364c-3.563-5.658-4.764-12.49-3.352-19.022l17.854-82.442
@@ -84,16 +102,16 @@ export function DemoSelector() {
               </svg>
             </div>
             <CardHeader className="flex-1">
-              <div className="h-12 w-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#6B7A6B20', color: '#6B7A6B' }}>
+              <div className="h-12 w-12 rounded-lg flex items-center justify-center mb-4" style={{ backgroundColor: '#14B8A620', color: '#14B8A6' }}>
                 <Package2 className="h-6 w-6" />
               </div>
-              <CardTitle>Liming Plans V2</CardTitle>
+              <CardTitle>Liming Plans V3</CardTitle>
               <CardDescription>
-                Enhanced liming demo with 20-year history, "not limed" field management, and improved UX patterns.
+                Latest liming demo with enhanced guidance messaging and improved user experience.
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-0 pb-6">
-              <Button className="w-full" onClick={(e) => { e.stopPropagation(); navigateToDemo('liming', 'v2') }}>
+              <Button className="w-full" onClick={(e) => { e.stopPropagation(); navigateToDemo('liming', 'v3') }}>
                 Open Demo
               </Button>
             </CardContent>
@@ -106,6 +124,7 @@ export function DemoSelector() {
             <span className="block">/?demo=fertiliser (Fertiliser)</span>
             <span className="block">/?demo=liming (Liming V1)</span>
             <span className="block">/?demo=liming&version=v2 (Liming V2)</span>
+            <span className="block">/?demo=liming&version=v3 (Liming V3)</span>
           </p>
           <p className="mt-4 text-[10px] text-muted-foreground/50">Nick PP 2026</p>
         </div>

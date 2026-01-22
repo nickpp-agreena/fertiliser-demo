@@ -27,7 +27,13 @@ export function Navigation({ fieldCount, onFieldCountChange }: NavigationProps) 
         const versionParam = urlParams.get('version')
         
         if (demoParam === 'liming') {
-            return versionParam === 'v2' ? 'Liming V2' : 'Liming V1'
+            if (versionParam === 'v3') {
+                return 'Liming V3'
+            } else if (versionParam === 'v2') {
+                return 'Liming V2'
+            } else {
+                return 'Liming V1'
+            }
         }
         return 'Fertiliser Plans'
     }
