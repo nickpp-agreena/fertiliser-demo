@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { AgreenaLayout } from "./components/agreena/AgreenaLayout"
 import { AgreenaMapPanel } from "./components/agreena/AgreenaMapPanel"
 import { Input } from "./components/ui/input"
@@ -6,8 +7,47 @@ import { Button } from "./components/ui/button"
 import { Info } from "lucide-react"
 import { TrashIcon } from "./components/icons/TrashIcon"
 import { ChevronDownIcon } from "./components/icons/ChevronDownIcon"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./components/ui/accordion"
+import { Chip } from "./components/ui/chip"
+import { FieldIcon } from "./components/icons/FieldIcon"
+import { RulerTriangleIcon } from "./components/icons/RulerTriangleIcon"
+import { SegmentedControl } from "./components/ui/segmented-control"
+import { FarmIcon } from "./components/icons/FarmIcon"
+import { SeedlingIcon } from "./components/icons/SeedlingIcon"
+import { Checkbox } from "./components/ui/checkbox"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+} from "./components/ui/select"
 
 export function AgreenaTestPage() {
+  // Generate years for Liming demo (2025 down to 2005)
+  const limingYears = Array.from({ length: 21 }, (_, i) => {
+    const year = 2025 - i
+    return { value: String(year), label: String(year) }
+  })
+
+  const [textOnlyValue, setTextOnlyValue] = useState("first")
+  const [iconTextValue, setIconTextValue] = useState("first")
+  const [iconOnlyValue, setIconOnlyValue] = useState("farm")
+  const [selectValue, setSelectValue] = useState<string>("")
+  const [checkboxStates, setCheckboxStates] = useState({
+    unchecked: false,
+    indeterminate: "indeterminate" as const,
+    checked: true,
+    dangerUnchecked: false,
+    dangerIndeterminate: "indeterminate" as const,
+    dangerChecked: true,
+    disabledUnchecked: false,
+    disabledIndeterminate: "indeterminate" as const,
+    disabledChecked: true,
+  })
+
   const handleBack = () => {
     window.location.href = "/"
   }
@@ -16,14 +56,12 @@ export function AgreenaTestPage() {
     console.log("Save clicked")
   }
 
-  // Debug: Log that component is rendering
-  console.log("AgreenaTestPage rendering")
-
   return (
     <AgreenaLayout
-      title="Liming Plans"
+      title="Harvest year 2024"
       onBack={handleBack}
-      onSave={handleSave}
+      rightAction="Save and exit"
+      onRightAction={handleSave}
     >
       {/* Left Panel - 672px wide */}
       <div className="w-[672px] min-h-screen overflow-y-auto bg-[#FAFAFA]">
@@ -140,9 +178,283 @@ export function AgreenaTestPage() {
             </div>
           </div>
 
+          {/* Liming Plan Row */}
+          <div className="px-6">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="liming-plan-1" className="bg-[#F2F2F2] rounded-[8px] border border-[#CCCCCC]">
+                <AccordionTrigger className="hover:no-underline px-4 py-3">
+                  <div className="flex items-center justify-between w-full pr-4">
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <h3 className="text-[16px] leading-[150%] font-bold text-[#0D0D0D]">
+                        Spring Liming 2024
+                      </h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Chip type="info" size="big" label="Limestone" />
+                        <Chip type="neutral" size="small" label="2024" />
+                        <Chip
+                          type="neutral"
+                          size="small"
+                          label="2.5 t/ha"
+                          icon={<RulerTriangleIcon size={12} />}
+                        />
+                        <Chip
+                          type="success"
+                          size="small"
+                          label="3 fields"
+                          icon={<FieldIcon size={12} />}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="text-[14px] text-[#666666]">
+                    Plan details would appear here when expanded.
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+
+          {/* Checkbox Examples */}
+          <div className="px-6 space-y-6">
+            <div className="space-y-4">
+              <Label className="text-[14px] leading-[150%] text-[#333333] font-normal">
+                Checkbox examples
+              </Label>
+              
+              {/* Default variant - unchecked, indeterminate, checked */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    checked={checkboxStates.unchecked}
+                    onCheckedChange={(checked) =>
+                      setCheckboxStates((prev) => ({ ...prev, unchecked: checked as boolean }))
+                    }
+                  />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#0D0D0D] cursor-pointer">
+                    Label
+                  </Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    checked={checkboxStates.indeterminate}
+                    onCheckedChange={(checked) =>
+                      setCheckboxStates((prev) => ({ ...prev, indeterminate: checked as typeof prev.indeterminate }))
+                    }
+                  />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#0D0D0D] cursor-pointer">
+                    Label
+                  </Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    checked={checkboxStates.checked}
+                    onCheckedChange={(checked) =>
+                      setCheckboxStates((prev) => ({ ...prev, checked: checked as boolean }))
+                    }
+                  />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#0D0D0D] cursor-pointer">
+                    Label
+                  </Label>
+                </div>
+              </div>
+
+              {/* Danger variant - unchecked, indeterminate, checked */}
+              <div className="flex flex-col gap-3 pt-4">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    variant="danger"
+                    checked={checkboxStates.dangerUnchecked}
+                    onCheckedChange={(checked) =>
+                      setCheckboxStates((prev) => ({ ...prev, dangerUnchecked: checked as boolean }))
+                    }
+                  />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#0D0D0D] cursor-pointer">
+                    Label
+                  </Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    variant="danger"
+                    checked={checkboxStates.dangerIndeterminate}
+                    onCheckedChange={(checked) =>
+                      setCheckboxStates((prev) => ({ ...prev, dangerIndeterminate: checked as typeof prev.dangerIndeterminate }))
+                    }
+                  />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#0D0D0D] cursor-pointer">
+                    Label
+                  </Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    variant="danger"
+                    checked={checkboxStates.dangerChecked}
+                    onCheckedChange={(checked) =>
+                      setCheckboxStates((prev) => ({ ...prev, dangerChecked: checked as boolean }))
+                    }
+                  />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#0D0D0D] cursor-pointer">
+                    Label
+                  </Label>
+                </div>
+              </div>
+
+              {/* Disabled variant - unchecked, indeterminate, checked */}
+              <div className="flex flex-col gap-3 pt-4">
+                <div className="flex items-center gap-3">
+                  <Checkbox checked={checkboxStates.disabledUnchecked} disabled />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#4D4D4D] cursor-not-allowed">
+                    Label
+                  </Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox checked={checkboxStates.disabledIndeterminate} disabled />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#4D4D4D] cursor-not-allowed">
+                    Label
+                  </Label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Checkbox checked={checkboxStates.disabledChecked} disabled />
+                  <Label className="text-[14px] leading-[150%] font-normal text-[#4D4D4D] cursor-not-allowed">
+                    Label
+                  </Label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Segmented Control Examples */}
+          <div className="px-6 space-y-6">
+            {/* Example 1: Text-only */}
+            <div className="space-y-2">
+              <Label className="text-[14px] leading-[150%] text-[#333333] font-normal">
+                Text-only segmented control
+              </Label>
+              <SegmentedControl
+                options={[
+                  { value: "first", label: "First" },
+                  { value: "second", label: "Second" },
+                  { value: "third", label: "Third" },
+                ]}
+                value={textOnlyValue}
+                onValueChange={setTextOnlyValue}
+              />
+            </div>
+
+            {/* Example 2: Text-only disabled */}
+            <div className="space-y-2">
+              <Label className="text-[14px] leading-[150%] text-[#333333] font-normal">
+                Text-only disabled state
+              </Label>
+              <SegmentedControl
+                options={[
+                  { value: "first", label: "First" },
+                  { value: "second", label: "Second" },
+                  { value: "third", label: "Third" },
+                ]}
+                value="first"
+                onValueChange={() => {}}
+                disabled
+              />
+            </div>
+
+            {/* Example 3: Icon + Text */}
+            <div className="space-y-2">
+              <Label className="text-[14px] leading-[150%] text-[#333333] font-normal">
+                Icon + text segmented control
+              </Label>
+              <SegmentedControl
+                options={[
+                  {
+                    value: "first",
+                    label: "First",
+                    icon: <FarmIcon size={16} />,
+                  },
+                  {
+                    value: "second",
+                    label: "Second",
+                    icon: <SeedlingIcon size={16} />,
+                  },
+                  {
+                    value: "third",
+                    label: "Third",
+                    icon: <Info className="w-4 h-4" />,
+                    disabled: true,
+                  },
+                ]}
+                value={iconTextValue}
+                onValueChange={setIconTextValue}
+              />
+            </div>
+
+            {/* Example 4: Icon-only */}
+            <div className="space-y-2">
+              <Label className="text-[14px] leading-[150%] text-[#333333] font-normal">
+                Icon-only segmented control
+              </Label>
+              <SegmentedControl
+                options={[
+                  {
+                    value: "farm",
+                    label: "",
+                    icon: <FarmIcon size={16} />,
+                  },
+                  {
+                    value: "seedling",
+                    label: "",
+                    icon: <SeedlingIcon size={16} />,
+                  },
+                ]}
+                value={iconOnlyValue}
+                onValueChange={setIconOnlyValue}
+              />
+            </div>
+          </div>
+
+          {/* Select Dropdown with Liming Demo Content */}
+          <div className="px-6 space-y-6">
+            <div className="space-y-2">
+              <Label className="text-[14px] leading-[150%] text-[#333333] font-normal">
+                Harvest Year (from Liming Demo)
+              </Label>
+              <Select value={selectValue} onValueChange={setSelectValue}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select year" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Recent Years</SelectLabel>
+                    {limingYears.slice(0, 5).map((year) => (
+                      <SelectItem key={year.value} value={year.value}>
+                        {year.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  <SelectGroup>
+                    <SelectLabel>Mid Range</SelectLabel>
+                    {limingYears.slice(5, 15).map((year) => (
+                      <SelectItem key={year.value} value={year.value}>
+                        {year.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                  <SelectGroup>
+                    <SelectLabel>Historical Years</SelectLabel>
+                    {limingYears.slice(15).map((year) => (
+                      <SelectItem key={year.value} value={year.value}>
+                        {year.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Main CTA Button */}
           <div className="px-6 pt-4">
-            <Button className="w-full h-[48px] bg-[#4730DB] hover:bg-[#6D57FF] active:bg-[#849FE5] text-white text-[16px] leading-[150%] font-medium rounded-[4px] transition-colors">
+            <Button className="w-full h-[48px] bg-[#4730DB] hover:bg-[#6D57FF] active:bg-[#849FE5] text-white text-[16px] leading-[150%] font-medium rounded-[8px] transition-colors">
               Confirm fertiliser practices for 2025
             </Button>
           </div>

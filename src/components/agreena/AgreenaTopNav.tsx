@@ -1,46 +1,80 @@
-import { ChevronLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ChevronLeftIcon } from "@/components/icons/ChevronLeftIcon"
+import { ChevronDownIcon } from "@/components/icons/ChevronDownIcon"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface AgreenaTopNavProps {
-  title: string
+  title?: string
+  titleClickable?: boolean
+  titleOptions?: { value: string; label: string }[]
+  titleValue?: string
+  onTitleChange?: (value: string) => void
   onBack?: () => void
-  onSave?: () => void
+  rightAction?: string
+  onRightAction?: () => void
 }
 
-export function AgreenaTopNav({ title, onBack, onSave }: AgreenaTopNavProps) {
+export function AgreenaTopNav({
+  title,
+  titleClickable = false,
+  titleOptions,
+  titleValue,
+  onTitleChange,
+  onBack,
+  rightAction = "Right Action",
+  onRightAction,
+}: AgreenaTopNavProps) {
   return (
-    <div className="w-[672px] h-[60px] bg-white border-b border-[#E3E3E3] flex items-center px-6 flex-shrink-0 relative">
+    <div className="w-[672px] h-[56px] bg-white border-b border-[#F2F2F2] flex items-center justify-between px-6 py-2 flex-shrink-0">
       {/* Left section - Back button */}
-      <div className="flex items-center gap-4 flex-1">
+      <div className="flex items-center gap-2">
         {onBack && (
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={onBack}
-            className="p-0 h-auto text-[#0D0D0D] hover:bg-transparent"
+            className="flex items-center gap-2 text-[#4730DB] underline text-[16px] leading-[150%] font-medium hover:no-underline"
           >
-            <ChevronLeft className="h-5 w-5" />
-            <span className="ml-1 text-[14px] leading-[150%]">Back</span>
-          </Button>
+            <ChevronLeftIcon size={16} />
+            <span>Back</span>
+          </button>
         )}
       </div>
+
       {/* Center section - Title */}
-      <div className="absolute left-1/2 -translate-x-1/2">
-        <h2 className="text-[16px] leading-[150%] font-medium text-[#0D0D0D]">
-          {title}
-        </h2>
+      <div className="flex-1 flex justify-center">
+        {titleClickable && titleOptions ? (
+          <Select value={titleValue} onValueChange={onTitleChange}>
+            <SelectTrigger className="w-auto border-none shadow-none p-0 h-auto bg-transparent hover:bg-transparent focus:ring-0 data-[placeholder]:text-[#0D0D0D]">
+              <SelectValue className="text-[16px] leading-[150%] font-medium text-[#0D0D0D]" />
+            </SelectTrigger>
+            <SelectContent>
+              {titleOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : title ? (
+          <h2 className="text-[16px] leading-[150%] font-medium text-[#0D0D0D]">
+            {title}
+          </h2>
+        ) : null}
       </div>
-      {/* Right section - Save button */}
-      <div className="flex items-center justify-end flex-1">
-        {onSave && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSave}
-            className="text-[14px] leading-[150%] text-[#0D0D0D] hover:bg-transparent"
+
+      {/* Right section - Action button */}
+      <div className="flex items-center">
+        {onRightAction && (
+          <button
+            onClick={onRightAction}
+            className="text-[#4730DB] underline text-[16px] leading-[150%] font-medium hover:no-underline"
           >
-            Save and exit
-          </Button>
+            {rightAction}
+          </button>
         )}
       </div>
     </div>
