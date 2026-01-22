@@ -30,7 +30,7 @@ export function AgreenaTopNav({
   onRightAction,
 }: AgreenaTopNavProps) {
   return (
-    <div className="w-[672px] h-[56px] bg-white border-b border-[#F2F2F2] flex items-center justify-between px-6 py-2 flex-shrink-0">
+    <div className="w-[672px] h-[56px] bg-white border-b border-[#F2F2F2] flex items-center justify-between px-6 py-2 flex-shrink-0 relative">
       {/* Left section - Back button */}
       <div className="flex items-center gap-2">
         {onBack && (
@@ -44,8 +44,8 @@ export function AgreenaTopNav({
         )}
       </div>
 
-      {/* Center section - Title */}
-      <div className="flex-1 flex justify-center">
+      {/* Center section - Title (absolutely centered) */}
+      <div className="absolute left-1/2 -translate-x-1/2">
         {titleClickable && titleOptions ? (
           <Select value={titleValue} onValueChange={onTitleChange}>
             <SelectTrigger className="w-auto border-none shadow-none p-0 h-auto bg-transparent hover:bg-transparent focus:ring-0 data-[placeholder]:text-[#0D0D0D]">

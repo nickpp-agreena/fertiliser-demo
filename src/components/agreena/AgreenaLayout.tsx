@@ -29,7 +29,7 @@ export function AgreenaLayout({
 }: AgreenaLayoutProps) {
   return (
     <div className="min-h-screen w-full bg-[#FAFAFA] overflow-x-auto">
-      <div className="w-[1440px] min-h-screen mx-auto bg-[#FAFAFA] flex">
+      <div className="w-[1440px] min-h-screen mx-auto bg-[#FAFAFA] flex relative">
         <AgreenaSidebar />
         <div className="flex flex-1 min-w-0">
           <div className="flex flex-col flex-1 min-w-0">

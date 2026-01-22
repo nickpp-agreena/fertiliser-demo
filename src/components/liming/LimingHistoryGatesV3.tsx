@@ -5,11 +5,13 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { CheckCircle2, Circle, AlertTriangle } from "lucide-react"
+import { CircleExclamationIcon } from "@/components/icons/CircleExclamationIcon"
 import type { LimingHistoryV3 } from "@/lib/limingTypes"
 
 interface LimingHistoryGatesV3Props {
   history: LimingHistoryV3
   onHistoryChange: (history: LimingHistoryV3) => void
+  hideDot?: boolean
 }
 
 // Generate years from 2025 down to 2005 (20 years)
@@ -21,7 +23,7 @@ const getAvailableYears = (): string[] => {
   return years
 }
 
-export function LimingHistoryGatesV3({ history, onHistoryChange }: LimingHistoryGatesV3Props) {
+export function LimingHistoryGatesV3({ history, onHistoryChange, hideDot = false }: LimingHistoryGatesV3Props) {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const availableYears = getAvailableYears()
 
@@ -67,10 +69,14 @@ export function LimingHistoryGatesV3({ history, onHistoryChange }: LimingHistory
       <Card className="mb-8 border-2 shadow-md bg-gradient-to-br from-card to-card/95">
         <CardHeader className="pb-5">
           <CardTitle className="text-xl font-bold flex items-center gap-2.5 text-foreground">
-            <div className="h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-primary/30" />
-            Liming History
+            {!hideDot && <div className="h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-primary/30" />}
+            Build your liming history
           </CardTitle>
-          <p className="text-sm text-muted-foreground mt-2 font-medium">Tell us about your liming history to get started</p>
+          <div className="mt-2">
+            <p className="text-sm text-muted-foreground font-medium">
+              Add the liming applications you've made over time.
+            </p>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Question 1: Applied in last 20 years? */}
@@ -116,15 +122,13 @@ export function LimingHistoryGatesV3({ history, onHistoryChange }: LimingHistory
           {/* Summary when complete */}
           {(history.appliedLast20Years === true && history.lastAppliedYear !== null) && (
             <div className="pt-5 border-t-2 animate-in fade-in duration-300">
-              <div className="flex items-start gap-4 p-5 rounded-lg border-2 border-primary/30 shadow-sm" style={{ backgroundColor: 'rgba(109, 87, 255, 0.05)' }}>
-                <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="h-6 w-6 text-primary" />
+              <div className="flex flex-row items-center py-2 px-4 gap-4 rounded-[4px]" style={{ background: '#FFF9E0' }}>
+                <div className="flex items-center justify-center w-4 h-4 flex-shrink-0" style={{ color: '#662C09' }}>
+                  <CircleExclamationIcon className="w-4 h-4" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold text-foreground mb-1.5">
-                    You can create a historical plan for your liming cycle applied over the last 20 years, the more accurate you can be the better our calculations
-                  </p>
-                </div>
+                <p className="text-[12px] leading-[150%] font-medium" style={{ color: '#662C09', fontFamily: 'Overpass' }}>
+                  You can go back up to 20 years, but it's fine to start with what you remember. The more accurate this is, the better we can estimate soil impact and carbon outcomes.
+                </p>
               </div>
             </div>
           )}

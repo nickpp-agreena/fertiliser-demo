@@ -1,0 +1,41 @@
+interface SortDownIconProps {
+  className?: string
+  size?: 12 | 16
+}
+
+export function SortDownIcon({ className, size = 16 }: SortDownIconProps) {
+  if (size === 12) {
+    return (
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={className}
+        style={{ width: '12px', height: '12px' }}
+      >
+        <path
+          d="M12.1289 9.9375L8.51953 13.6562C8.38281 13.8203 8.19141 13.875 8 13.875C7.78125 13.875 7.58984 13.8203 7.45312 13.6562L3.84375 9.9375C3.35156 9.44531 3.70703 8.625 4.36328 8.625H11.6094C12.2656 8.625 12.6211 9.44531 12.1289 9.9375Z"
+          fill="currentColor"
+        />
+      </svg>
+    )
+  }
+
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path
+        d="M12.1289 9.9375L8.51953 13.6562C8.38281 13.8203 8.19141 13.875 8 13.875C7.78125 13.875 7.58984 13.8203 7.45312 13.6562L3.84375 9.9375C3.35156 9.44531 3.70703 8.625 4.36328 8.625H11.6094C12.2656 8.625 12.6211 9.44531 12.1289 9.9375Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}

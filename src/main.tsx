@@ -5,6 +5,7 @@ import App from './App.tsx'
 import LimingApp from './LimingApp.tsx'
 import LimingAppV2 from './LimingAppV2.tsx'
 import LimingAppV3 from './LimingAppV3.tsx'
+import LimingAppV4 from './LimingAppV4.tsx'
 import { DemoSelector } from './components/DemoSelector'
 import { AgreenaTestPage } from './AgreenaTestPage.tsx'
 
@@ -14,7 +15,8 @@ import { VersionProvider } from "@/components/version-provider"
 // Check URL parameters to determine which demo to show
 const urlParams = new URLSearchParams(window.location.search)
 const demoParam = urlParams.get('demo')
-const versionParam = urlParams.get('version')
+const versionParamRaw = urlParams.get('version')
+const versionParam = versionParamRaw ? versionParamRaw.toLowerCase().trim() : null
 
 // Determine which app to render
 let DemoApp: React.ComponentType
@@ -22,7 +24,9 @@ let DemoApp: React.ComponentType
 if (demoParam === 'agreena-test') {
   DemoApp = AgreenaTestPage
 } else if (demoParam === 'liming') {
-  if (versionParam === 'v3') {
+  if (versionParam === 'v4') {
+    DemoApp = LimingAppV4
+  } else if (versionParam === 'v3') {
     DemoApp = LimingAppV3
   } else if (versionParam === 'v2') {
     DemoApp = LimingAppV2
@@ -36,8 +40,8 @@ if (demoParam === 'agreena-test') {
   DemoApp = DemoSelector
 }
 
-// Use Agreena theme for agreena-test demo, otherwise use shadcn
-const defaultTheme = demoParam === 'agreena-test' ? 'agreena' : 'shadcn'
+// Use Agreena theme for agreena-test demo and liming v4, otherwise use shadcn
+const defaultTheme = (demoParam === 'agreena-test' || (demoParam === 'liming' && versionParam === 'v4')) ? 'agreena' : 'shadcn'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

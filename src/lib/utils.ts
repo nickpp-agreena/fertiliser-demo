@@ -76,7 +76,7 @@ export function getMaterialTypeColor(material_type: "limestone" | "dolomite" | n
         case "limestone":
             return "#6B7A6B" // Dark grey-green for limestone (active, distinct)
         case "dolomite":
-            return "#D9CBA3" // Buff/Tan Dolomite - warm tan
+            return "#8B7355" // Darker brown/tan for dolomite - improved readability
         default:
             return "hsl(var(--primary))" // Use primary color when no material type is set
     }

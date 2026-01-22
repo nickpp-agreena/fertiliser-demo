@@ -8,6 +8,7 @@ import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/
 import { Separator } from "@/components/ui/separator"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { LimingFieldSelectionV3 } from "./LimingFieldSelectionV3"
+import { LimingFieldSelectionV4 } from "./LimingFieldSelectionV4"
 import { Badge } from "@/components/ui/badge"
 import { getMaterialTypeColor } from "@/lib/utils"
 import { MoreVertical, Trash2, Copy, Check, CheckCircle, Calendar, Package, MapPin, Save } from "lucide-react"
@@ -26,6 +27,7 @@ interface LimingPlanAccordionItemV3Props {
   notLimedFieldIds: Set<string>
   onMarkNotLimed: (fieldIds: string[]) => void
   onUnmarkNotLimed?: (fieldIds: string[]) => void
+  hideDots?: boolean
 }
 
 export function LimingPlanAccordionItemV3({
@@ -42,6 +44,7 @@ export function LimingPlanAccordionItemV3({
   notLimedFieldIds,
   onMarkNotLimed,
   onUnmarkNotLimed,
+  hideDots = false,
 }: LimingPlanAccordionItemV3Props) {
   const [selectedFieldIds, setSelectedFieldIds] = useState<string[]>(plan.field_ids)
   const [lastSavedPlan, setLastSavedPlan] = useState<LimingPlanV3 | null>(null)
@@ -121,14 +124,16 @@ export function LimingPlanAccordionItemV3({
       <AccordionTrigger className="hover:no-underline pr-12 py-5">
         <div className="flex items-center gap-4 flex-1">
           <div className="flex items-center gap-3">
-            <div 
-              className="h-2.5 w-2.5 rounded-full ring-2" 
-              style={{ 
-                backgroundColor: getMaterialTypeColor(plan.material_type),
-                borderColor: `${getMaterialTypeColor(plan.material_type)}40`,
-                boxShadow: `0 0 0 2px ${getMaterialTypeColor(plan.material_type)}20`
-              }}
-            />
+            {!hideDots && (
+              <div 
+                className="h-2.5 w-2.5 rounded-full ring-2" 
+                style={{ 
+                  backgroundColor: getMaterialTypeColor(plan.material_type),
+                  borderColor: `${getMaterialTypeColor(plan.material_type)}40`,
+                  boxShadow: `0 0 0 2px ${getMaterialTypeColor(plan.material_type)}20`
+                }}
+              />
+            )}
             <span className="font-bold text-lg tracking-tight text-foreground">{plan.name || "New Plan"}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
@@ -201,14 +206,16 @@ export function LimingPlanAccordionItemV3({
           <div className="space-y-6 p-6 rounded-lg border-2 shadow-sm" style={{ backgroundColor: 'rgba(109, 87, 255, 0.1)' }}>
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold flex items-center gap-2 text-foreground">
-                <div 
-                  className="h-2 w-2 rounded-full ring-2" 
-                  style={{ 
-                    backgroundColor: getMaterialTypeColor(plan.material_type),
-                    borderColor: `${getMaterialTypeColor(plan.material_type)}40`,
-                    boxShadow: `0 0 0 2px ${getMaterialTypeColor(plan.material_type)}30`
-                  }}
-                ></div>
+                {!hideDots && (
+                  <div 
+                    className="h-2 w-2 rounded-full ring-2" 
+                    style={{ 
+                      backgroundColor: getMaterialTypeColor(plan.material_type),
+                      borderColor: `${getMaterialTypeColor(plan.material_type)}40`,
+                      boxShadow: `0 0 0 2px ${getMaterialTypeColor(plan.material_type)}30`
+                    }}
+                  ></div>
+                )}
                 Plan Details
               </h3>
               {plan.field_ids.length > 0 && (
@@ -316,16 +323,29 @@ export function LimingPlanAccordionItemV3({
         <Separator className="my-6" />
 
         {/* Field Selection */}
-        <LimingFieldSelectionV3
-          fields={fields}
-          selectedFieldIds={selectedFieldIds}
-          onSelectionChange={setSelectedFieldIds}
-          planId={plan.id}
-          planYear={plan.year}
-          plans={plans}
-          notLimedFieldIds={notLimedFieldIds}
-          onMarkNotLimed={onMarkNotLimed}
-        />
+        {hideDots ? (
+          <LimingFieldSelectionV4
+            fields={fields}
+            selectedFieldIds={selectedFieldIds}
+            onSelectionChange={setSelectedFieldIds}
+            planId={plan.id}
+            planYear={plan.year}
+            plans={plans}
+            notLimedFieldIds={notLimedFieldIds}
+            onMarkNotLimed={onMarkNotLimed}
+          />
+        ) : (
+          <LimingFieldSelectionV3
+            fields={fields}
+            selectedFieldIds={selectedFieldIds}
+            onSelectionChange={setSelectedFieldIds}
+            planId={plan.id}
+            planYear={plan.year}
+            plans={plans}
+            notLimedFieldIds={notLimedFieldIds}
+            onMarkNotLimed={onMarkNotLimed}
+          />
+        )}
 
         {/* Total Area and Tonnes - Less Visual Impact */}
         {hasFields && (
@@ -345,61 +365,59 @@ export function LimingPlanAccordionItemV3({
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="space-y-4 pt-6 border-t">
-          {/* Primary Action: Apply to Fields */}
-          <div className="space-y-2">
-            <Button
-              onClick={handleApply}
-              className="w-full font-semibold shadow-md min-w-[200px] h-12 text-base"
-              disabled={!hasSelectedFields || !isValid}
-              size="lg"
-            >
-              <MapPin className="mr-2 h-5 w-5" />
-              Apply to {selectedFieldIds.length} Selected Field{selectedFieldIds.length !== 1 ? 's' : ''}
-            </Button>
-            {hasSelectedFields && isValid && (
-              <p className="text-xs text-muted-foreground text-center">
-                This will assign the selected fields to this plan and save all plan details
-              </p>
-            )}
-            {hasSelectedFields && !isValid && (
-              <p className="text-xs text-warning text-center">
-                Please set material type and application rate before applying to fields
-              </p>
-            )}
-          </div>
+        {/* Action Buttons - Choice Pattern */}
+        <div className="pt-6 border-t border-[#F2F2F2]">
+          <div className="bg-[#FAFAFA] rounded-[8px] border border-[#E3E3E3] p-4">
+            <div className="flex items-start gap-4">
+              {/* Save for Later Section */}
+              <div className="flex-1 flex flex-col">
+                <h3 className="text-[14px] leading-[150%] font-medium text-[#0D0D0D] mb-2">Save without assigning fields</h3>
+                <div className="flex-1 flex items-center">
+                  <button
+                    onClick={handleSave}
+                    disabled={!hasUnsavedChanges && !showSaveSuccess}
+                    className="w-full h-[36px] border border-[#4730DB] rounded-[8px] text-[#4730DB] text-[14px] leading-[150%] font-medium px-4 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#4730DB]/5 transition-colors flex items-center justify-center"
+                  >
+                    {showSaveSuccess ? (
+                      <>
+                        <CheckCircle className="mr-2 h-3.5 w-3.5" />
+                        Saved
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-3.5 w-3.5" />
+                        Save details
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
 
-          {/* Secondary Action: Save Plan Details Only */}
-          <div className="flex items-center gap-3 pt-2 border-t">
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground mb-1">Save Plan Details</p>
-              <p className="text-xs text-muted-foreground">Save plan name, material, and rate without applying to fields</p>
+              {/* Divider - Vertical Line */}
+              <div className="flex items-center px-2 self-stretch">
+                <div className="w-px h-full bg-[#E3E3E3]"></div>
+              </div>
+
+              {/* Apply Now Section */}
+              <div className="flex-1 flex flex-col">
+                <h3 className="text-[14px] leading-[150%] font-medium text-[#0D0D0D] mb-2">Apply plan now</h3>
+                <div className="flex-1 flex items-center">
+                  <button
+                    onClick={handleApply}
+                    disabled={!hasSelectedFields || !isValid}
+                    className="w-full h-[36px] bg-[#4730DB] hover:bg-[#6D57FF] active:bg-[#849FE5] text-white text-[14px] leading-[150%] font-medium rounded-[8px] shadow-md transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    <MapPin className="mr-2 h-3.5 w-3.5" />
+                    Apply to {selectedFieldIds.length} field{selectedFieldIds.length !== 1 ? 's' : ''}
+                  </button>
+                </div>
+                {hasSelectedFields && !isValid && (
+                  <p className="text-[11px] leading-[150%] text-[#8E0000] font-normal mt-2">
+                    Set material type and rate first
+                  </p>
+                )}
+              </div>
             </div>
-            <Button
-              onClick={handleSave}
-              variant={hasUnsavedChanges ? "default" : "outline"}
-              className="font-semibold shadow-sm min-w-[120px] h-10"
-              disabled={!hasUnsavedChanges && !showSaveSuccess}
-              size="sm"
-            >
-              {showSaveSuccess ? (
-                <>
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Saved
-                </>
-              ) : hasUnsavedChanges ? (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  Save
-                </>
-              ) : (
-                <>
-                  <Check className="mr-2 h-4 w-4" />
-                  Save
-                </>
-              )}
-            </Button>
           </div>
         </div>
       </AccordionContent>
