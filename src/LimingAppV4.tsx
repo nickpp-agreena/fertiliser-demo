@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { AgreenaLayout } from "@/components/agreena/AgreenaLayout"
 import { AgreenaMapPanel } from "@/components/agreena/AgreenaMapPanel"
 import type { Field, LimingPlanV3, LimingHistoryV3 } from "@/lib/limingTypes"
 import { LimingPlanAccordionItemV3 } from "@/components/liming/LimingPlanAccordionItemV3"
 import { LimingHistoryGatesV3 } from "@/components/liming/LimingHistoryGatesV3"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
+import { Accordion } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Plus, CheckCircle2, Save } from "lucide-react"
 import { FIELD_DATA } from "@/lib/fieldData"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { FieldIcon } from "@/components/icons/FieldIcon"
 
 const generateId = () => Math.random().toString(36).substring(2, 9)
@@ -56,21 +56,19 @@ export default function LimingAppV4() {
   const shouldShowPlanBuilder =
     history.appliedLast20Years === true && history.lastAppliedYear !== null
 
-  // Initialize all fields as "not limed" when plan builder becomes visible
-  useEffect(() => {
-    if (shouldShowPlanBuilder) {
-      // Mark all fields as "not limed" when plan builder is shown
-      setNotLimedFieldIds(new Set(fields.map(f => f.id)))
-    }
-  }, [shouldShowPlanBuilder, fields])
+  // Handle history changes and initialize field states
+  const handleHistoryChange = (newHistory: LimingHistoryV3) => {
+    // If transitioning to "No" or to the plan builder for the first time
+    const becomesNo = newHistory.appliedLast20Years === false && history.appliedLast20Years !== false
+    const becomesPlanBuilder = (newHistory.appliedLast20Years === true && newHistory.lastAppliedYear !== null) &&
+      (history.appliedLast20Years !== true || history.lastAppliedYear === null)
 
-  // Auto-mark all fields as "not limed" when user says "No"
-  useEffect(() => {
-    if (history.appliedLast20Years === false) {
-      // Mark all fields as "not limed" when user confirms no liming
+    if (becomesNo || becomesPlanBuilder) {
       setNotLimedFieldIds(new Set(fields.map(f => f.id)))
     }
-  }, [history.appliedLast20Years, fields])
+
+    setHistory(newHistory)
+  }
 
   // Mark fields as not limed
   const markFieldsAsNotLimed = (fieldIds: string[]) => {
@@ -316,7 +314,7 @@ export default function LimingAppV4() {
         <div className="w-[672px] min-h-screen overflow-y-auto bg-[#FAFAFA]">
           <div className="px-6 py-6 space-y-6">
             {/* History Gates */}
-            <LimingHistoryGatesV3 history={history} onHistoryChange={setHistory} hideDot={true} />
+            <LimingHistoryGatesV3 history={history} onHistoryChange={handleHistoryChange} />
 
             {/* Plan Builder Section */}
             {shouldShowPlanBuilder && (
@@ -375,12 +373,10 @@ export default function LimingAppV4() {
                         onAssignFields={assignFieldsToPlan}
                         onDelete={deletePlan}
                         onDuplicate={duplicatePlan}
-                        isOpen={openAccordionItems.includes(plan.id)}
                         onClose={() => setOpenAccordionItems(prev => prev.filter(id => id !== plan.id))}
                         availableYears={availableYears}
                         notLimedFieldIds={notLimedFieldIds}
                         onMarkNotLimed={markFieldsAsNotLimed}
-                        onUnmarkNotLimed={unmarkFieldsAsNotLimed}
                         hideDots={true}
                         onMapClick={handleAddMapPin}
                       />

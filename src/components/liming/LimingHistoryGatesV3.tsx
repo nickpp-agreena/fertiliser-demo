@@ -4,14 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { CheckCircle2, Circle, AlertTriangle } from "lucide-react"
+import { AlertTriangle } from "lucide-react"
 import { CircleExclamationIcon } from "@/components/icons/CircleExclamationIcon"
 import type { LimingHistoryV3 } from "@/lib/limingTypes"
 
 interface LimingHistoryGatesV3Props {
   history: LimingHistoryV3
   onHistoryChange: (history: LimingHistoryV3) => void
-  hideDot?: boolean
 }
 
 // Generate years from 2025 down to 2005 (20 years)
@@ -23,7 +22,7 @@ const getAvailableYears = (): string[] => {
   return years
 }
 
-export function LimingHistoryGatesV3({ history, onHistoryChange, hideDot = false }: LimingHistoryGatesV3Props) {
+export function LimingHistoryGatesV3({ history, onHistoryChange }: LimingHistoryGatesV3Props) {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const availableYears = getAvailableYears()
 

@@ -11,7 +11,7 @@ import { LimingFieldSelectionV3 } from "./LimingFieldSelectionV3"
 import { LimingFieldSelectionV4 } from "./LimingFieldSelectionV4"
 import { Badge } from "@/components/ui/badge"
 import { getMaterialTypeColor } from "@/lib/utils"
-import { MoreVertical, Trash2, Copy, Check, CheckCircle, Calendar, Package, MapPin, Save } from "lucide-react"
+import { MoreVertical, Trash2, Copy, CheckCircle, Calendar, Package, MapPin, Save } from "lucide-react"
 
 interface LimingPlanAccordionItemV3Props {
   plan: LimingPlanV3
@@ -21,12 +21,10 @@ interface LimingPlanAccordionItemV3Props {
   onAssignFields: (planId: string, year: string, fieldIds: string[]) => void
   onDelete: (planId: string) => void
   onDuplicate: (plan: LimingPlanV3) => void
-  isOpen?: boolean
   onClose?: () => void
   availableYears: string[]
   notLimedFieldIds: Set<string>
   onMarkNotLimed: (fieldIds: string[]) => void
-  onUnmarkNotLimed?: (fieldIds: string[]) => void
   hideDots?: boolean
   onMapClick?: () => void
 }
@@ -52,12 +50,10 @@ export function LimingPlanAccordionItemV3({
   onAssignFields,
   onDelete,
   onDuplicate,
-  isOpen,
   onClose,
   availableYears,
   notLimedFieldIds,
   onMarkNotLimed,
-  onUnmarkNotLimed,
   hideDots = false,
   onMapClick,
 }: LimingPlanAccordionItemV3Props) {
@@ -77,22 +73,9 @@ export function LimingPlanAccordionItemV3({
     }
   }, [plan, lastSavedPlan])
 
-  // Calculate area from selected fields
-  const calculateArea = (fieldIds: string[]): number => {
-    return fieldIds.reduce((sum, id) => {
-      const field = fields.find(f => f.id === id)
-      return sum + (field?.hectares || 0)
-    }, 0)
-  }
 
-  // Update area when field_ids change
-  useEffect(() => {
-    const newArea = calculateArea(plan.field_ids)
-    if (Math.abs(newArea - plan.area_ha) > 0.01) {
-      onUpdate({ ...plan, area_ha: newArea })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan.field_ids])
+
+
 
   // Check if plan has unsaved changes
   const hasUnsavedChanges = lastSavedPlan ? JSON.stringify(plan) !== JSON.stringify(lastSavedPlan) : false
