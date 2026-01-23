@@ -107,7 +107,7 @@ export function LimingHistoryGatesV3({ history, onHistoryChange, hideDot = false
             <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <Label className="text-base font-bold text-foreground block">In which year did you last apply liming to your fields?</Label>
               <Select onValueChange={handleLastAppliedYear}>
-                <SelectTrigger className="w-full h-12 text-base border-2 focus:border-primary">
+                <SelectTrigger className="w-full h-10 text-base border-[#333333] focus:border-primary">
                   <SelectValue placeholder="Select year..." />
                 </SelectTrigger>
                 <SelectContent>

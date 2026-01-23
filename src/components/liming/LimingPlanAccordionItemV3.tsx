@@ -265,7 +265,7 @@ export function LimingPlanAccordionItemV3({
                   value={plan.year && availableYears.includes(plan.year) ? plan.year : availableYears[0]}
                   onValueChange={(value) => onUpdate({ ...plan, year: value })}
                 >
-                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-background">
+                  <SelectTrigger className="h-10 border-[#333333] focus:border-primary bg-background">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -287,7 +287,7 @@ export function LimingPlanAccordionItemV3({
                   value={plan.material_type || ""}
                   onValueChange={(value) => onUpdate({ ...plan, material_type: value as "limestone" | "dolomite" | null })}
                 >
-                  <SelectTrigger className="h-11 border-2 focus:border-primary bg-background">
+                  <SelectTrigger className="h-10 border-[#333333] focus:border-primary bg-background">
                     <SelectValue placeholder="Select material..." />
                   </SelectTrigger>
                   <SelectContent>

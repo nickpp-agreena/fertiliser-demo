@@ -19,13 +19,10 @@ const SelectTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
-      className={cn(
-        "group flex h-10 w-full items-center justify-between whitespace-nowrap rounded-[4px] border bg-white px-4 py-[10px] text-sm ring-offset-background data-[placeholder]:text-[#747474] focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>span]:font-medium [&>span]:text-[14px] [&>span]:leading-[150%]",
-        className
-      )}
-    style={{
-      borderColor: "#4730DB",
-    }}
+    className={cn(
+      "group flex h-10 w-full items-center justify-between whitespace-nowrap rounded-[4px] border border-[#333333] bg-white px-4 py-[10px] text-sm ring-offset-background data-[placeholder]:text-[#747474] focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>span]:font-medium [&>span]:text-[14px] [&>span]:leading-[150%]",
+      className
+    )}
     {...props}
   >
     {children}
@@ -84,7 +81,7 @@ const SelectContent = React.forwardRef<
       className={cn(
         "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] overflow-y-auto overflow-x-hidden rounded-[4px] border bg-white text-[#0D0D0D] shadow-[0px_4px_8px_rgba(0,0,0,0.05)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-select-content-transform-origin]",
         position === "popper" &&
-          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+        "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
         className
       )}
       style={{
@@ -98,7 +95,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           "p-4 gap-2",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+          "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
         )}
       >
         {children}
