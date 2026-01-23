@@ -127,16 +127,16 @@ export function LimingPlanAccordionItemV3({
         <div className="flex items-center gap-4 flex-1">
           <div className="flex items-center gap-3">
             {!hideDots && (
-              <div 
-                className="h-2.5 w-2.5 rounded-full ring-2" 
-                style={{ 
+              <div
+                className="h-2.5 w-2.5 rounded-full ring-2"
+                style={{
                   backgroundColor: getMaterialTypeColor(plan.material_type),
                   borderColor: `${getMaterialTypeColor(plan.material_type)}40`,
                   boxShadow: `0 0 0 2px ${getMaterialTypeColor(plan.material_type)}20`
                 }}
               />
             )}
-            <span className="font-bold text-lg tracking-tight text-foreground">{plan.name || "New Plan"}</span>
+            <span className="font-bold text-lg tracking-tight text-foreground truncate max-w-[160px]">{plan.name || "New Plan"}</span>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="text-[10px] px-2 py-0.5 h-5 gap-1">
@@ -144,8 +144,8 @@ export function LimingPlanAccordionItemV3({
               {plan.year}
             </Badge>
             {plan.material_type && (
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className="text-[10px] px-2 py-0.5 h-5 gap-1"
                 style={{
                   backgroundColor: `${getMaterialTypeColor(plan.material_type)}20`,
@@ -209,9 +209,9 @@ export function LimingPlanAccordionItemV3({
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold flex items-center gap-2 text-foreground">
                 {!hideDots && (
-                  <div 
-                    className="h-2 w-2 rounded-full ring-2" 
-                    style={{ 
+                  <div
+                    className="h-2 w-2 rounded-full ring-2"
+                    style={{
                       backgroundColor: getMaterialTypeColor(plan.material_type),
                       borderColor: `${getMaterialTypeColor(plan.material_type)}40`,
                       boxShadow: `0 0 0 2px ${getMaterialTypeColor(plan.material_type)}30`
@@ -226,7 +226,7 @@ export function LimingPlanAccordionItemV3({
                 </Badge>
               )}
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Plan Name */}
               <div className="space-y-2.5 md:col-span-2">
