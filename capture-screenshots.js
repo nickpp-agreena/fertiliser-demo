@@ -500,6 +500,21 @@ async function captureScreenshots() {
         type: 'png',
       });
 
+      // Screenshot: Save details clicked (shows "Saved" state)
+      console.log('Clicking "Save details" button...');
+      const saveDetailsClicked = await clickButtonByText(page, 'Save details');
+      if (saveDetailsClicked) {
+        await waitForRender(page, 500); // Wait for state to update
+        console.log('📸 Capturing Stage 9b: Save Details Success State...');
+        await page.screenshot({
+          path: join(SCREENSHOT_DIR, 'liming-v4-stage-9b-save-details-success-1440px.png'),
+          fullPage: true,
+          type: 'png',
+        });
+        // Wait a bit more to see the saved state
+        await waitForRender(page, 1000);
+      }
+
       // Click "Apply plan now"
       console.log('Clicking "Apply plan now"...');
       const applyClicked = await clickButtonByText(page, 'Apply to');
