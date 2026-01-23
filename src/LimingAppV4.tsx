@@ -6,9 +6,10 @@ import { LimingPlanAccordionItemV3 } from "@/components/liming/LimingPlanAccordi
 import { LimingHistoryGatesV3 } from "@/components/liming/LimingHistoryGatesV3"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { Plus, CheckCircle2, Save, Layers } from "lucide-react"
+import { Plus, CheckCircle2, Save } from "lucide-react"
 import { FIELD_DATA } from "@/lib/fieldData"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { FieldIcon } from "@/components/icons/FieldIcon"
 
 const generateId = () => Math.random().toString(36).substring(2, 9)
 
@@ -338,7 +339,7 @@ export default function LimingAppV4() {
                     <div className="max-w-[400px] mx-auto space-y-6">
                       <div className="flex justify-center">
                         <div className="h-16 w-16 rounded-full bg-[#EDE9FE] flex items-center justify-center">
-                          <Layers className="h-8 w-8 text-[#4730DB]" />
+                          <FieldIcon className="h-10 w-10 text-[#4730DB]" />
                         </div>
                       </div>
                       <div className="space-y-2">
