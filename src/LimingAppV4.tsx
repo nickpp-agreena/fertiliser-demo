@@ -441,11 +441,13 @@ export default function LimingAppV4() {
       </div>
     </AgreenaLayout>
     
-    {/* Right Panel - Map - Fixed to viewport, positioned at right edge of 1440px container */}
+    {/* Right Panel - Map - Fixed to viewport, fills entire right side */}
     <div 
-      className="fixed top-0 h-screen w-[720px] z-10" 
+      className="fixed top-0 bottom-0 z-10" 
       style={{ 
-        left: 'max(calc((100vw - 1440px) / 2 + 720px), 720px)'
+        left: 'max(calc((100vw - 1440px) / 2 + 720px), 720px)',
+        right: 0, // Extends to right edge of viewport
+        width: 'auto', // Width calculated from left and right
       }}
     >
       <AgreenaMapPanel pin={mapPin} />
