@@ -66,19 +66,19 @@ export function LimingHistoryGatesV3({ history, onHistoryChange, hideDot = false
 
   return (
     <>
-      <Card className="mb-8 border-2 shadow-md bg-gradient-to-br from-card to-card/95">
-        <CardHeader className="pb-5">
-          <CardTitle className="text-xl font-bold flex items-center gap-2.5 text-foreground">
-            {!hideDot && <div className="h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-primary/30" />}
+      <Card className="mb-8 border border-[#E5E5E5] shadow-sm bg-white rounded-[12px]">
+        <CardHeader className="pt-8 pb-5">
+          <CardTitle className="text-[20px] leading-[130%] font-semibold text-[#0D0D0D]">
             Build your liming history
           </CardTitle>
           <div className="mt-2">
-            <p className="text-sm text-muted-foreground font-medium">
+            <p className="text-[14px] leading-[150%] text-[#666666]">
               Add the liming applications you've made over time.
             </p>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          <div className="h-px w-full bg-[#E5E5E5] mb-6" />
           {/* Question 1: Applied in last 20 years? */}
           {history.appliedLast20Years === null && (
             <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
@@ -121,12 +121,12 @@ export function LimingHistoryGatesV3({ history, onHistoryChange, hideDot = false
 
           {/* Summary when complete */}
           {(history.appliedLast20Years === true && history.lastAppliedYear !== null) && (
-            <div className="pt-5 border-t-2 animate-in fade-in duration-300">
-              <div className="flex flex-row items-center py-2 px-4 gap-4 rounded-[4px]" style={{ background: '#FFF9E0' }}>
-                <div className="flex items-center justify-center w-4 h-4 flex-shrink-0" style={{ color: '#662C09' }}>
-                  <CircleExclamationIcon className="w-4 h-4" />
+            <div className="animate-in fade-in duration-300">
+              <div className="flex flex-row items-center py-4 px-4 gap-4 rounded-[8px]" style={{ background: '#FFFBEB', border: '1px solid #FEF3C7' }}>
+                <div className="flex items-center justify-center w-5 h-5 flex-shrink-0" style={{ color: '#92400E' }}>
+                  <CircleExclamationIcon className="w-5 h-5" />
                 </div>
-                <p className="text-[12px] leading-[150%] font-medium" style={{ color: '#662C09', fontFamily: 'Overpass' }}>
+                <p className="text-[14px] leading-[150%] font-normal" style={{ color: '#92400E' }}>
                   You can go back up to 20 years, but it's fine to start with what you remember. The more accurate this is, the better we can estimate soil impact and carbon outcomes.
                 </p>
               </div>
