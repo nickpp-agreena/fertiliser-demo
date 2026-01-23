@@ -71,12 +71,16 @@ export function getPlanTypeDotColor(planType: PlanType | "unassigned"): string {
 }
 
 // Get material type color for liming plans
-export function getMaterialTypeColor(material_type: "limestone" | "dolomite" | null): string {
+export function getMaterialTypeColor(material_type: "limestone" | "dolomite" | "quicklime" | "hydrated_lime" | null): string {
     switch (material_type) {
         case "limestone":
             return "#6B7A6B" // Dark grey-green for limestone (active, distinct)
         case "dolomite":
             return "#8B7355" // Darker brown/tan for dolomite - improved readability
+        case "quicklime":
+            return "#8B0000" // Dark Red for quicklime
+        case "hydrated_lime":
+            return "#2E5894" // Deep Blue-Steel for hydrated lime
         default:
             return "hsl(var(--primary))" // Use primary color when no material type is set
     }

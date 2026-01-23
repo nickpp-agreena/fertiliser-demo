@@ -4,7 +4,7 @@ export type LimingPlan = {
   year: string | "pre-5-years"
   isHistorical?: boolean
   historicalYear?: string // Optional specific year for historical plans (2020 or earlier)
-  material_type: "limestone" | "dolomite" | null
+  material_type: "limestone" | "dolomite" | "quicklime" | "hydrated_lime" | null
   application_rate_t_per_ha: number
   field_ids: string[]
   area_ha: number // Derived from selected fields
@@ -32,7 +32,7 @@ export type LimingPlanV2 = {
   id: string
   name: string
   year: string // Actual year (2025-2005), no "pre-5-years" special case
-  material_type: "limestone" | "dolomite" | null
+  material_type: "limestone" | "dolomite" | "quicklime" | "hydrated_lime" | null
   application_rate_t_per_ha: number
   field_ids: string[]
   area_ha: number // Derived from selected fields
@@ -48,7 +48,7 @@ export type LimingPlanV3 = {
   id: string
   name: string
   year: string // Actual year (2025-2005), no "pre-5-years" special case
-  material_type: "limestone" | "dolomite" | null
+  material_type: "limestone" | "dolomite" | "quicklime" | "hydrated_lime" | null
   application_rate_t_per_ha: number
   field_ids: string[]
   area_ha: number // Derived from selected fields

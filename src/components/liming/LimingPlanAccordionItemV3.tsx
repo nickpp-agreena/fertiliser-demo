@@ -31,6 +31,19 @@ interface LimingPlanAccordionItemV3Props {
   onMapClick?: () => void
 }
 
+const MATERIALS_MAP = {
+  limestone: { name: "Limestone", formula: "CaCO3" },
+  dolomite: { name: "Dolomite", formula: "CaMg(CO3)2" },
+  quicklime: { name: "Quicklime", formula: "CaO" },
+  hydrated_lime: { name: "Hydrated lime", formula: "Ca(OH)2" },
+}
+
+const renderFormula = (formula: string) => {
+  return formula.split(/(\d+)/).map((part, i) =>
+    i % 2 === 1 ? <sub key={i} className="text-[10px]">{part}</sub> : part
+  )
+}
+
 export function LimingPlanAccordionItemV3({
   plan,
   fields,
@@ -154,7 +167,7 @@ export function LimingPlanAccordionItemV3({
                 }}
               >
                 <Package className="h-3 w-3" />
-                {plan.material_type}
+                {MATERIALS_MAP[plan.material_type].name}
               </Badge>
             )}
             {plan.application_rate_t_per_ha > 0 && (
@@ -278,8 +291,16 @@ export function LimingPlanAccordionItemV3({
                     <SelectValue placeholder="Select material..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="limestone">Limestone</SelectItem>
-                    <SelectItem value="dolomite">Dolomite</SelectItem>
+                    {Object.entries(MATERIALS_MAP).map(([value, { name, formula }]) => (
+                      <SelectItem key={value} value={value}>
+                        <div className="flex items-center justify-between w-full min-w-[180px]">
+                          <span>{name}</span>
+                          <span className="text-xs text-muted-foreground ml-2">
+                            {renderFormula(formula)}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
